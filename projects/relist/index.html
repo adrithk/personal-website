@@ -1,0 +1,101 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010"><title>Relist — Adrith Kurlagunda</title>
+<meta name="description" content="Turning clothing photos into evidence-aware resale listings, with human review built into the workflow.">
+<meta property="og:title" content="Relist — Adrith Kurlagunda">
+<meta property="og:description" content="Turning clothing photos into evidence-aware resale listings, with human review built into the workflow.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+<link rel="preload" href="../../assets/fonts/fraunces-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script src="../../assets/reveal.js" defer></script>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body><a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+<header class="site-header"><a class="wordmark" href="../../index.html" aria-label="Adrith Kurlagunda, home"><span>adrithk</span></a>
+<nav class="nav" aria-label="Main navigation"><a href="../../index.html#work">Work</a><a class="home-about" href="../../index.html#about">About</a><a class="resume-link" href="../../resume.html">Résumé</a>
+</nav>
+</header>
+<main id="main" tabindex="-1" class="project-main"><a class="back" href="../index.html">← All projects</a>
+<header class="project-header">
+<p class="eyebrow">02 / Applied AI & software
+</p>
+<h1>Relist
+</h1>
+<p class="project-lede">Turning clothing photos into evidence-aware resale listings, with human review built into the workflow.
+</p>
+<div class="project-meta"><span class="tags">Python · FastAPI · OpenCV · OpenAI API · Next.js · TypeScript · Cloudinary</span>
+<div class="socials"><a href="https://github.com/adrithk/Resale-Automator"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.558 21.923c.563.103.769-.244.769-.542 0-.267-.01-.975-.015-1.914-3.13.68-3.79-1.508-3.79-1.508-.512-1.3-1.25-1.646-1.25-1.646-1.022-.699.078-.685.078-.685 1.13.079 1.724 1.16 1.724 1.16 1.005 1.722 2.638 1.225 3.28.937.103-.728.393-1.225.715-1.507-2.5-.285-5.128-1.25-5.128-5.566 0-1.23.44-2.232 1.16-3.02-.116-.284-.503-1.43.11-2.98 0 0 .946-.303 3.095 1.153a10.79 10.79 0 0 1 5.635 0c2.148-1.456 3.093-1.154 3.093-1.154.614 1.55.228 2.697.112 2.981.722.788 1.158 1.79 1.158 3.02 0 4.328-2.632 5.278-5.14 5.557.404.35.766 1.042.766 2.1 0 1.516-.014 2.739-.014 3.111 0 .3.203.65.774.54A11.252 11.252 0 0 0 12 .75Z"/></svg><span>GitHub</span></a><a href="https://github.com/adrithk/Resale-Automator/releases/download/demo-2026-09-03/relist-demo.mp4">Demo</a>
+</div>
+</div>
+</header>
+<div class="project-body">
+<div class="diagram"><span class="figure-label">Workflow / a deliberate review step</span>
+<div class="flow">
+<div class="flow-node">Photos<small>Garment views + readable tag</small>
+</div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Analyze & validate<small>Facts, evidence, uncertainty</small>
+</div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Human review<small>Edit, approve, save</small>
+</div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Export<small>Depop-compatible CSV</small>
+</div>
+</div>
+</div>
+
+<h2>Useful AI needs a review step.
+</h2>
+<p>Relist turns clothing and tag photos into structured listing facts, editable descriptions, and a suggested price. I built it to make the repetitive parts of resale listing easier while keeping uncertain details visible and the final decision with the seller.
+</p>
+<p>A Next.js interface handles photo intake and review. Behind it, a Python and FastAPI pipeline checks image quality, calls the OpenAI Responses API, validates the proposed facts, and prepares the approved listing for export.
+</p>
+
+<h2>What I built
+</h2>
+<ul>
+<li><strong>Evidence-aware extraction.</strong> Model-proposed facts include confidence and photo provenance. Validation blocks unreadable tags and preserves unknown or conflicting details for review.
+</li>
+<li><strong>Deterministic marketplace mapping.</strong> Category is resolved before size. Versioned vocabularies map fields to Depop values, including jeans waist/inseam parsing and brand aliases.
+</li>
+<li><strong>A review and approval interface.</strong> Sellers can edit facts, listing text, and price. Edits pass validation again before approval and local saving.
+</li>
+<li><strong>Repeatable export.</strong> Approved photos are hosted on Cloudinary with content-derived IDs and caching. The export preserves the required leading rows of Depop’s version-6 CSV template.
+</li>
+</ul>
+
+<h2>Separate prediction from validation.
+</h2>
+<p>Image analysis, fact checking, listing text, and model-assisted pricing have separate responsibilities. The model suggests; deterministic checks decide whether those suggestions are valid enough to move into review. Provider requests use strict structured outputs and bounded retries.
+</p>
+<div class="callout">
+<p><strong>The workflow ends at export.</strong> Relist produces a CSV for manual import into Depop’s Selling Hub. It does not publish listings automatically. Prices are model suggestions, rather than researched marketplace averages.
+</p>
+</div>
+
+<h2>Demo & verification
+</h2>
+<p class="links-note"><a href="https://github.com/adrithk/Resale-Automator/releases/download/demo-2026-09-03/relist-demo.mp4">Watch the one-minute demo</a> to see photo intake, review, and CSV export. The app runs locally; the recording can be viewed without configuring the app.
+</p>
+<p>The repository documents 150 passing offline tests covering photo handling, fact validation, pricing, saving, and export, along with a successful frontend production build. Provider responses were simulated for those tests; they do not establish live model accuracy or speed.
+</p>
+<p class="links-note">Read the <a href="https://github.com/adrithk/Resale-Automator">implementation, setup instructions, and project tradeoffs on GitHub</a>.
+</p>
+</div>
+<nav class="project-next" aria-label="Project navigation"><a class="back-home" href="../../index.html">← Back home</a><a href="../solar-water-purification/index.html"><span class="next-label">Next project</span><span class="next-title">Solar water purification </span></a>
+</nav>
+</main>
+<footer class="site-footer"><span>Adrith Kurlagunda <span aria-hidden="true">·</span> Bay Area, CA</span><nav class="footer-socials" aria-label="Social links">
+<a href="https://github.com/adrithk" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.558 21.923c.563.103.769-.244.769-.542 0-.267-.01-.975-.015-1.914-3.13.68-3.79-1.508-3.79-1.508-.512-1.3-1.25-1.646-1.25-1.646-1.022-.699.078-.685.078-.685 1.13.079 1.724 1.16 1.724 1.16 1.005 1.722 2.638 1.225 3.28.937.103-.728.393-1.225.715-1.507-2.5-.285-5.128-1.25-5.128-5.566 0-1.23.44-2.232 1.16-3.02-.116-.284-.503-1.43.11-2.98 0 0 .946-.303 3.095 1.153a10.79 10.79 0 0 1 5.635 0c2.148-1.456 3.093-1.154 3.093-1.154.614 1.55.228 2.697.112 2.981.722.788 1.158 1.79 1.158 3.02 0 4.328-2.632 5.278-5.14 5.557.404.35.766 1.042.766 2.1 0 1.516-.014 2.739-.014 3.111 0 .3.203.65.774.54A11.252 11.252 0 0 0 12 .75Z"/></svg></a>
+<a href="https://www.linkedin.com/in/adrith-kurlagunda-428865277/" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg></a>
+<a href="mailto:adrithk@gmail.com" aria-label="Email Adrith" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></a>
+</nav>
+</footer>
+</div>
+</body>
+</html>
