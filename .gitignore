@@ -4,3 +4,6 @@
 .env.*
 !.env.example
 *.log
+
+# Local design proposals are separate from the published site.
+/previews/

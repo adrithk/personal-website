@@ -424,46 +424,64 @@ section {
 
 .personal h3 {
   font:400 1.5rem var(--display);
-  margin:23px 0 10px;
+  margin:22px 0 12px;
   letter-spacing:-.02em
 }
 
 .personal p {
   font-size:0.8125rem;
   color:var(--muted);
-  line-height:1.85
+  line-height:1.75
 }
 
+.personal > p:not(.sports) { margin-bottom:0; }
+
 .coffee-gallery {
-  max-width:280px;
-  margin:18px 0 0;
+  margin:22px 0 0;
 }
 
 .coffee-photos {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   align-items:start;
-  gap:8px;
+  gap:9px;
 }
 
 .coffee-photos a {
   display:block;
+  overflow:hidden;
   cursor:zoom-in;
+  background:var(--wash);
+  border-radius:2px;
 }
-
-.coffee-photos a:nth-child(2) { margin-top:12px; }
-.coffee-photos a:nth-child(3) { margin-top:4px; }
 
 .coffee-photos img {
   width:100%;
   height:auto;
-  border-radius:2px;
+  aspect-ratio:1;
+  object-fit:cover;
+}
+
+.coffee-gallery figcaption {
+  margin-top:9px;
+  font-size:0.625rem;
+  color:var(--muted);
 }
 
 .personal .sports {
-  padding-top:15px;
-  border-top:1px solid var(--line);
-  margin-top:25px
+  border-top:0;
+  padding:0;
+  margin:22px 0 0;
+  max-width:38ch;
+}
+
+.personal .sports::before {
+  content:'';
+  display:block;
+  width:30px;
+  height:1px;
+  margin-bottom:15px;
+  background:var(--burgundy-edge);
 }
 
 .contact {
@@ -929,6 +947,8 @@ section {
 .personal p {
   font-size:0.8125rem
 }
+
+.coffee-gallery { max-width:400px; }
 
 .contact {
   margin-top:40px;
