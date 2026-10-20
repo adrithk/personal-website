@@ -778,8 +778,28 @@ section {
   color:var(--accent)
 }
 
+.resume-page .shell {
+  display:flex;
+  flex-direction:column;
+  min-height:100svh;
+}
+
 .resume-main {
+  flex:1;
   padding:42px 0 30px;
+}
+
+.resume-placeholder {
+  border-top:1px solid var(--line);
+  padding:28px 0 60px;
+}
+
+.resume-placeholder p {
+  max-width:36ch;
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  line-height:1.8;
 }
 
 .resume-main .back {
