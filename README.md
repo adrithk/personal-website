@@ -43,7 +43,7 @@ The GitHub repository is separate from hosting. Pushing this source does not dep
 
 Scroll reveals live in `assets/reveal.js` and are shared across the homepage, project collection, and case studies. The homepage introduction fills the first screen, with projects below the fold and a centered scroll cue. An IntersectionObserver replays the entrance whenever a text group returns to view, resetting it only after it is fully off-screen. Project rows use a larger upward entrance with a short blur-to-sharp transition. The name and scroll cue remain immediately visible. Content remains readable without JavaScript, with reduced motion enabled, and when printing.
 
-The portfolio contains no analytics, contact-form service, or remote fonts. Links to GitHub, LinkedIn, the Relist demo, and Google Patents leave the local site only when followed. The site has not been deployed.
+The portfolio contains no analytics, contact-form service, or remote fonts. Links to GitHub, LinkedIn, X, the Relist demo, and Google Patents leave the local site only when followed. The site has not been deployed.
 
 Font sources: [Fraunces](https://fontsource.org/fonts/fraunces/about) and [DM Sans](https://fontsource.org/fonts/dm-sans/about), distributed under the SIL Open Font License.
 
@@ -60,4 +60,4 @@ Sports and About Me expansions remain ideas to discuss before implementing. Keep
 - [Material Design — Dark theme](https://m2.material.io/design/color/dark-theme.html): sparse accents, with lighter tonal variants for legibility on dark surfaces.
 - [W3C — Contrast minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html): verify at least 4.5:1 for normal text. Dark burgundy and deep plum are decorative; text uses lighter rose and violet tones.
 
-Adjust `--burgundy`, `--burgundy-edge`, `--plum`, and `--purple-edge` for decorative color. Adjust `--accent-warm` and `--accent` for readable accent text. Social links use inline GitHub, LinkedIn, and email icons instead of external-link arrows.
+Adjust `--burgundy`, `--burgundy-edge`, `--plum`, and `--purple-edge` for decorative color. Adjust `--accent-warm` and `--accent` for readable accent text. Social links use inline GitHub, LinkedIn, X, and email icons instead of external-link arrows.
