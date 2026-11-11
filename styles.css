@@ -1224,20 +1224,8 @@ section {
   display:block;
 }
 
-/* The top bar and the introduction both stay pinned while the burst plays,
-   then release together once the hold distance has been scrolled. */
-.burst-on .burst-head {
-  position:relative;
-  z-index:2;
-  height:calc(var(--home-header-height) + var(--burst-scroll));
-  margin-bottom:calc(-1 * var(--burst-scroll));
-  pointer-events:none;
-}
-.burst-on .burst-head .site-header {
-  position:sticky;
-  top:0;
-  pointer-events:auto;
-}
+/* The introduction stays pinned below the (always sticky) top bar while the burst plays,
+   then releases once the hold distance has been scrolled. */
 .burst-on .burst-stage { height:calc(100svh - var(--home-header-height) + var(--burst-scroll)); }
 .burst-on .burst-stage .hero {
   position:sticky;
@@ -1271,7 +1259,102 @@ section {
 
 @media print {
   .burst-canvas { display:none; }
-  .burst-on .burst-head,.burst-on .burst-stage { height:auto; margin:0; }
-  .burst-on .burst-head .site-header,.burst-on .burst-stage .hero { position:static; }
+  .burst-on .burst-stage { height:auto; margin:0; }
+  .burst-on .burst-stage .hero { position:static; }
   .burst-on .hero :is(.eyebrow,.intro,.hero-note,.socials,.hero-art) { opacity:1; transform:none; }
+}
+
+/* Readable small text: labels, descriptions, dates, captions and the footer, one or two steps up
+   from the original scale. These follow the rules above, so they also apply at phone widths. */
+.wordmark { font-size:0.875rem; }
+.nav { font-size:0.8125rem; }
+.eyebrow,
+.section-label,
+.figure-label { font-size:0.75rem; }
+.hero-note { font-size:0.9375rem; }
+.socials { font-size:0.8125rem; }
+.socials svg { width:15px; height:15px; }
+.hero-art figcaption { font-size:0.6875rem; white-space:nowrap; }
+.section-heading h2,
+.section-heading span { font-size:0.75rem; }
+.project-number { font-size:0.75rem; }
+.project-row p { font-size:0.9375rem; line-height:1.7; max-width:560px; }
+.tags { font-size:0.6875rem; }
+.all-projects-link { font-size:0.8125rem; }
+.background-note { font-size:0.875rem; }
+.experience h3 { font-size:1.0625rem; }
+.experience time { font-size:0.75rem; }
+.experience .role { font-size:0.8125rem; }
+.experience p { font-size:0.875rem; line-height:1.7; }
+.personal p { font-size:0.9375rem; }
+.coffee-gallery figcaption { font-size:0.75rem; }
+.contact p { font-size:0.9375rem; }
+.contact > a { font-size:0.9375rem; }
+.site-footer { font-size:0.75rem; }
+.back { font-size:0.8125rem; }
+.project-meta .tags { font-size:0.75rem; }
+.callout p { font-size:0.875rem; }
+.photo-pair figcaption,
+.wide-figure figcaption { font-size:0.75rem; }
+.flow-node { font-size:0.8125rem; }
+.flow-node small { font-size:0.6875rem; }
+.diagram-note { font-size:0.75rem !important; }
+.project-next .next-label { font-size:0.6875rem; }
+.project-next .back-home { font-size:0.8125rem; }
+@media(max-width:560px) {
+  .hero .eyebrow { font-size:0.6875rem; }
+  .project-row p { font-size:0.875rem; }
+  .personal p { font-size:0.875rem; }
+}
+@media(max-width:560px) {
+  .site-footer {
+    flex-direction:column-reverse;
+    align-items:flex-start;
+    gap:2px;
+    padding-top:10px;
+  }
+  .footer-socials { margin-left:-13px; }
+}
+
+/* A larger name on the homepage at desktop widths; it is the only thing on the opening screen. */
+@media(min-width:761px) {
+  .home-page .hero h1 {
+    font-size:clamp(2.75rem,5.7vw,3.875rem);
+    letter-spacing:-.04em;
+    margin-bottom:24px;
+  }
+}
+
+/* Sticky top bar on every page, with a frosted backdrop that spans the window.
+   On the homepage, burst.js adds .header-clear while the opening colour is behind the bar. */
+html { scroll-padding-top:104px; overflow-x:clip; }
+section { scroll-margin-top:104px; }
+.burst-head { display:contents; }
+.site-header { position:sticky; top:0; z-index:5; }
+.site-header::before {
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:calc(50% - 50vw);
+  right:calc(50% - 50vw);
+  z-index:-1;
+  background:rgba(16,16,16,.72);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+  transition:opacity 240ms ease;
+  pointer-events:none;
+}
+.header-clear .site-header::before { opacity:0; }
+.nav a { padding:12px 0; margin:-12px 0; }
+.nav a[aria-current="page"] {
+  color:var(--ink);
+  text-decoration:underline;
+  text-decoration-color:var(--burgundy-edge);
+  text-decoration-thickness:1px;
+  text-underline-offset:8px;
+}
+@media print {
+  .site-header { position:static; }
+  .site-header::before { display:none; }
 }

@@ -9,6 +9,7 @@
   const AFTERGLOW = .6;  // brightness of the glow that lingers behind the introduction
   const FLASH = .88;     // brightness of the burst itself (1 = full)
   const REMNANTS = .3;   // brightness of the purple clouds further down the page (0 = none)
+  const REMNANTS_NARROW = .5; // multiplier for REMNANTS at phone widths, where the clouds span the whole page
   const DURATION = 2.4;  // seconds from first scroll to settled afterglow
   // The burst: indigo → violet → magenta → hot pink. No reds, oranges or creams.
   const FLASH_COLORS = ['#2b1470', '#6a24c8', '#c838c8', '#f8408a'];
@@ -212,9 +213,11 @@ void main(){
     // As the introduction scrolls away the burst fades and the remnants take over.
     const past = Math.min(1, Math.max(0, (window.scrollY - travel()) / (window.innerHeight * .8)));
     const fade = 1 - past;
-    const amb = past * REMNANTS;
+    const amb = past * REMNANTS * (window.innerWidth < 700 ? REMNANTS_NARROW : 1);
 
     hero.style.setProperty('--p', p.toFixed(4));
+    // The sticky top bar has no backdrop while the introduction is still pinned beneath it.
+    root.classList.toggle('header-clear', window.scrollY <= travel() + 40);
 
     const visible = fade > .002 || amb > .002;
     // With only the slow remnants on screen, drawing every other frame is plenty.
@@ -250,7 +253,7 @@ void main(){
   reduceMotion.addEventListener('change', event => {
     if (!event.matches || stopped) return;
     stopped = true;
-    root.classList.remove('burst-on');
+    root.classList.remove('burst-on', 'header-clear');
     canvas.remove();
   });
 
