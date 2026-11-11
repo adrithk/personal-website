@@ -283,8 +283,15 @@ void main(){
     event.preventDefault();
   });
   document.addEventListener('click', event => {
-    if (!held && event.target.closest?.('a[href*="#"]')) release();
+    if (!held && event.target.closest?.('a[href*="#"]:not(.scroll-cue)')) release();
   }, true);
+  // The arrow on the opening screen starts the burst rather than jumping past it: it scrolls only as far
+  // as the pinned introduction allows. (Without the burst it remains an ordinary link to the projects.)
+  hero.querySelector('.scroll-cue')?.addEventListener('click', event => {
+    if (stopped) return;
+    event.preventDefault();
+    window.scrollTo({ top:travel(), behavior:'smooth' });
+  });
   window.addEventListener('hashchange', release);
 
   // Reduced motion switched on mid-visit: back to the ordinary page.
