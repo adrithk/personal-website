@@ -1233,14 +1233,13 @@ section {
   --p:0;
 }
 
-/* Before the burst: the top bar, the name, and a small arrow. Everything else arrives as the colour
+/* Before the burst: the top bar, the UCLA line, the name, and a small arrow. Everything else arrives as the colour
    settles. --p runs from 0 to 1 and is set by the script. */
-.burst-on .hero :is(.eyebrow,.intro,.hero-note,.socials,.hero-art) {
+.burst-on .hero :is(.intro,.hero-note,.socials,.hero-art) {
   opacity:clamp(0,calc((var(--p) - var(--from,.4)) * 4),1);
   transform:translateY(calc((1 - clamp(0,calc((var(--p) - var(--from,.4)) * 4),1)) * 14px));
   transition:none;
 }
-.burst-on .hero .eyebrow { --from:.4; transform:none; }
 .burst-on .hero .hero-art { --from:.4; }
 .burst-on .hero .intro { --from:.48; }
 .burst-on .hero .hero-note { --from:.56; }
@@ -1261,7 +1260,7 @@ section {
   .burst-canvas { display:none; }
   .burst-on .burst-stage { height:auto; margin:0; }
   .burst-on .burst-stage .hero { position:static; }
-  .burst-on .hero :is(.eyebrow,.intro,.hero-note,.socials,.hero-art) { opacity:1; transform:none; }
+  .burst-on .hero :is(.intro,.hero-note,.socials,.hero-art) { opacity:1; transform:none; }
 }
 
 /* Readable small text: labels, descriptions, dates, captions and the footer, one or two steps up
