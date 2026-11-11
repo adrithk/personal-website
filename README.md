@@ -43,6 +43,8 @@ The GitHub repository is separate from hosting. Pushing this source does not dep
 
 Scroll reveals live in `assets/reveal.js` and are shared across the homepage, project collection, and case studies. The homepage introduction fills the first screen, with projects below the fold and a centered scroll cue. An IntersectionObserver replays the entrance whenever a text group returns to view, resetting it only after it is fully off-screen. Project rows use a larger upward entrance with a short blur-to-sharp transition. The name and scroll cue remain immediately visible. Content remains readable without JavaScript, with reduced motion enabled, and when printing.
 
+On the homepage, `assets/scroll-text.js` replaces the timed entrance of the project rows: each row's title, description and tags fill in word by word as the row scrolls up the window, and reverse when scrolling back. `START`, `END`, `SPREAD` and `FLOOR` at the top of the script tune where it begins, where it completes, how soft the edge is, and how faint unrevealed words are.
+
 ## Opening colour burst
 
 The homepage opens dark, with only the top bar, the name, and a small arrow. On the first scroll a cloud of violet and pink smoke bursts from behind the name, settles into a purple afterglow while the rest of the introduction fades in, and faint purple clouds then drift behind the page as it scrolls. The introduction stays pinned while this plays and releases afterwards. The top bar is sticky on every page, with a frosted backdrop; on the homepage it stays clear while the opening colour is behind it (`.header-clear`, set by `burst.js`).

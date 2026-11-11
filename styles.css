@@ -1358,3 +1358,17 @@ section { scroll-margin-top:104px; }
   .site-header { position:static; }
   .site-header::before { display:none; }
 }
+
+/* Scroll-linked project text (assets/scroll-text.js). Inert until the script adds .scrolltext-on.
+   It replaces the timed entrance on the homepage project rows; --o and --sp are set by the script. */
+.scrolltext-on .project-row.reveal { opacity:1; transform:none; filter:none; transition:none; }
+.scrolltext-on .project-row.reveal .project-thumb > * { transform:none; transition:none; }
+.scrolltext-on .project-row .sw { opacity:var(--o,1); transition:opacity 140ms linear; }
+.scrolltext-on .project-row :is(.project-number,.project-thumb) {
+  opacity:calc(.08 + .92 * var(--sp,1));
+  transition:opacity 140ms linear;
+}
+@media print {
+  .scrolltext-on .project-row .sw,
+  .scrolltext-on .project-row :is(.project-number,.project-thumb) { opacity:1; }
+}
