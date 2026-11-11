@@ -1208,3 +1208,70 @@ section {
 .diagram { border-left:2px solid var(--burgundy); }
 .contact > a { text-decoration-color:var(--accent-warm); }
 .contact > a:hover { text-decoration-color:var(--accent); }
+
+/* Homepage opening burst (assets/burst.js). Every rule here is inert until the script adds .burst-on,
+   so the page is unchanged without JavaScript, without WebGL, or with reduced motion. */
+:root { --burst-scroll:45vh; }
+
+/* The colour field sits behind the whole page, above the page background. */
+.burst-canvas {
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100lvh;
+  z-index:-1;
+  pointer-events:none;
+  display:block;
+}
+
+/* The top bar and the introduction both stay pinned while the burst plays,
+   then release together once the hold distance has been scrolled. */
+.burst-on .burst-head {
+  position:relative;
+  z-index:2;
+  height:calc(var(--home-header-height) + var(--burst-scroll));
+  margin-bottom:calc(-1 * var(--burst-scroll));
+  pointer-events:none;
+}
+.burst-on .burst-head .site-header {
+  position:sticky;
+  top:0;
+  pointer-events:auto;
+}
+.burst-on .burst-stage { height:calc(100svh - var(--home-header-height) + var(--burst-scroll)); }
+.burst-on .burst-stage .hero {
+  position:sticky;
+  top:var(--home-header-height);
+  --p:0;
+}
+
+/* Before the burst: the top bar, the name, and a small arrow. Everything else arrives as the colour
+   settles. --p runs from 0 to 1 and is set by the script. */
+.burst-on .hero :is(.eyebrow,.intro,.hero-note,.socials,.hero-art) {
+  opacity:clamp(0,calc((var(--p) - var(--from,.4)) * 4),1);
+  transform:translateY(calc((1 - clamp(0,calc((var(--p) - var(--from,.4)) * 4),1)) * 14px));
+  transition:none;
+}
+.burst-on .hero .eyebrow { --from:.4; transform:none; }
+.burst-on .hero .hero-art { --from:.4; }
+.burst-on .hero .intro { --from:.48; }
+.burst-on .hero .hero-note { --from:.56; }
+.burst-on .hero .socials { --from:.64; }
+.burst-on .hero :is(.intro,.hero-note,.socials):focus-within { opacity:1; transform:none; }
+
+.burst-on .hero .scroll-cue span:first-child {
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+.burst-on .hero .scroll-cue { opacity:clamp(0,calc(1 - var(--p) * 5),1); }
+
+@media print {
+  .burst-canvas { display:none; }
+  .burst-on .burst-head,.burst-on .burst-stage { height:auto; margin:0; }
+  .burst-on .burst-head .site-header,.burst-on .burst-stage .hero { position:static; }
+  .burst-on .hero :is(.eyebrow,.intro,.hero-note,.socials,.hero-art) { opacity:1; transform:none; }
+}

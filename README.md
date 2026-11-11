@@ -43,6 +43,16 @@ The GitHub repository is separate from hosting. Pushing this source does not dep
 
 Scroll reveals live in `assets/reveal.js` and are shared across the homepage, project collection, and case studies. The homepage introduction fills the first screen, with projects below the fold and a centered scroll cue. An IntersectionObserver replays the entrance whenever a text group returns to view, resetting it only after it is fully off-screen. Project rows use a larger upward entrance with a short blur-to-sharp transition. The name and scroll cue remain immediately visible. Content remains readable without JavaScript, with reduced motion enabled, and when printing.
 
+## Opening colour burst
+
+The homepage opens dark, with only the top bar, the name, and a small arrow. On the first scroll a cloud of violet and pink smoke bursts from behind the name, settles into a purple afterglow while the rest of the introduction fades in, and faint purple clouds then drift behind the page as it scrolls. The top bar and introduction stay pinned while this plays and release together afterwards.
+
+- **Script:** `assets/burst.js` draws everything on one WebGL canvas (`.burst-canvas` in `index.html`). The tuning values are named constants at the top of the file: `REACH` (how far the blast travels), `FLASH` (burst brightness), `AFTERGLOW` (brightness of what lingers), `REMNANTS` (brightness of the clouds further down; 0 turns them off), `DURATION` (seconds to settle), and the two colour lists. `PAPER` must match `--paper` in `styles.css`.
+- **Styles:** the “Homepage opening burst” block at the end of `styles.css` pins the header and introduction and hides the introduction copy until the colour settles. `--burst-scroll` sets how long the pinned hold lasts. Every rule is inert until the script adds `.burst-on` to the page.
+- **Markup:** in `index.html` the header is wrapped in `.burst-head` and the hero in `.burst-stage`. Only the homepage has these; the other pages are unchanged.
+- **Fallbacks:** without JavaScript or WebGL, with reduced motion enabled, and when printing, the homepage is the ordinary page with everything visible and no colour.
+- **Design studies:** the versions that led here, with a control panel for comparing options, are in the ignored `previews/` folder (`burst.html` to `burst-4.html`).
+
 The portfolio contains no analytics, contact-form service, or remote fonts. Links to GitHub, LinkedIn, X, the Relist demo, and Google Patents leave the local site only when followed. The site has not been deployed.
 
 Font sources: [Fraunces](https://fontsource.org/fonts/fraunces/about) and [DM Sans](https://fontsource.org/fonts/dm-sans/about), distributed under the SIL Open Font License.
