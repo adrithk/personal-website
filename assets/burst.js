@@ -6,11 +6,12 @@
 (() => {
   // ---- Tuning ----
   const REACH = 1.3;     // how far the blast travels, in half screen-diagonals
-  const AFTERGLOW = .6;  // brightness of the glow that lingers behind the introduction
+  const AFTERGLOW = .5;  // brightness of the glow that lingers behind the introduction
   const FLASH = .88;     // brightness of the burst itself (1 = full)
-  const REMNANTS = .3;   // brightness of the purple clouds further down the page (0 = none)
+  const REMNANTS = .25;  // brightness of the purple clouds further down the page (0 = none)
   const REMNANTS_NARROW = .5; // multiplier for REMNANTS at phone widths, where the clouds span the whole page
   const DURATION = 2.4;  // seconds from first scroll to settled afterglow
+  const HOLD_UNTIL = .9;  // the page cannot scroll past the introduction until the burst is this far along (0 = no hold)
   // The burst: indigo → violet → magenta → hot pink. No reds, oranges or creams.
   const FLASH_COLORS = ['#2b1470', '#6a24c8', '#c838c8', '#f8408a'];
   // What lingers: violet → purple → magenta. These hues stay vivid when dimmed.
@@ -84,7 +85,7 @@ void main(){
 
     // The afterglow: a smaller, soft-edged cloud. Dim edges lean violet and only
     // the bright core reaches magenta, so nothing turns muddy as it fades.
-    float Ra=u_reach*.82*(1.+.3*(ang-.5)*1.4);
+    float Ra=u_reach*.72*(1.+.3*(ang-.5)*1.4);
     float env=pow(1.-smoothstep(Ra*.12,Ra,r),1.4);
     float passed=1.-smoothstep(R-.35,R,r);
     vec3 calm=glow((n*1.7-.38)*mix(.3,1.,env))*(.8+1.1*n)*u_glow*env*passed;
@@ -122,13 +123,13 @@ void main(){
       float cy=(c+.5+(h2-.5)*.3)*period;
       vec2 dv=vec2((uv.x-cx)*asp,py-cy);
       float nn=fbm(vec3(dv*2.2+c*3.1,u_time*.04));
-      a+=glow(nn*1.6-.32)*exp(-dot(dv,dv)/(.1+.22*nn))*(.3+1.2*nn)*.84*step(1.,cy);
+      a+=glow(nn*1.6-.32)*exp(-dot(dv,dv)/(.075+.17*nn))*(.3+1.2*nn)*.84*step(1.,cy);
       // companion on the opposite side: smaller and fainter, a little above or below the main cloud
       float bx=mix(.97,.03,side)+(h3-.5)*.1;
       float by=cy+(h1-.42)*.42*period;
       vec2 ev=vec2((uv.x-bx)*asp,py-by);
       float mm=fbm(vec3(ev*2.8+c*5.7+11.,u_time*.04));
-      a+=glow(mm*1.3-.3)*exp(-dot(ev,ev)/(.06+.12*mm))*(.2+.75*mm)*(.6+.25*h2)*step(1.,by);
+      a+=glow(mm*1.3-.3)*exp(-dot(ev,ev)/(.045+.09*mm))*(.2+.75*mm)*(.6+.25*h2)*step(1.,by);
     }
     // Ease off a little towards the foot of the page so the last screen ends quietly.
     float toEnd=u_end+1.-uv.y;                     // viewport-heights above the page bottom
@@ -209,6 +210,7 @@ void main(){
     // Fires once past the first few pixels of scroll; reverses quickly when back at the very top.
     const goal = window.scrollY > 6 ? 1 : 0;
     p = goal > p ? Math.min(goal, p + dt / DURATION) : Math.max(goal, p - dt / .8);
+    if (holding && p >= HOLD_UNTIL) release();
 
     // As the introduction scrolls away the burst fades and the remnants take over.
     const past = Math.min(1, Math.max(0, (window.scrollY - travel()) / (window.innerHeight * .8)));
@@ -249,10 +251,47 @@ void main(){
     requestAnimationFrame(frame);
   };
 
+  // ---- Scroll hold ----
+  // The first time the burst plays, a hard flick cannot carry the page past the introduction: scrolling
+  // down is held at the pinned introduction until the colour has settled, then released. Links that jump
+  // down the page, and arriving already scrolled, skip the hold.
+  let holding = false;
+  let held = HOLD_UNTIL <= 0;  // true once the hold has been used (or skipped) for this visit
+  let lastY = window.scrollY;
+  const release = () => { holding = false; held = true; };
+  const DOWN_KEYS = new Set([' ', 'PageDown', 'End', 'ArrowDown']);
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (!held && !holding && y > 6) {
+      // One jump from the top to beyond the introduction is a restored position or an in-page link.
+      if (lastY <= 6 && y > travel() + 1) release();
+      else holding = true;
+    }
+    if (holding && y <= 6) holding = false;  // back at the top: the burst rewinds, and the hold re-arms
+    if (holding && y > travel()) window.scrollTo({ top:travel(), behavior:'instant' });
+    lastY = y;
+  }, { passive:true });
+  window.addEventListener('wheel', event => {
+    if (holding && event.deltaY > 0 && event.cancelable) event.preventDefault();
+  }, { passive:false });
+  window.addEventListener('touchmove', event => {
+    if (holding && event.cancelable && window.scrollY >= travel() - 1) event.preventDefault();
+  }, { passive:false });
+  window.addEventListener('keydown', event => {
+    if (!holding || !DOWN_KEYS.has(event.key) || (event.key === ' ' && event.shiftKey)) return;
+    if (event.target.closest?.('a,button,input,textarea,select,video') && event.key === ' ') return;
+    event.preventDefault();
+  });
+  document.addEventListener('click', event => {
+    if (!held && event.target.closest?.('a[href*="#"]')) release();
+  }, true);
+  window.addEventListener('hashchange', release);
+
   // Reduced motion switched on mid-visit: back to the ordinary page.
   reduceMotion.addEventListener('change', event => {
     if (!event.matches || stopped) return;
     stopped = true;
+    release();
     root.classList.remove('burst-on', 'header-clear');
     canvas.remove();
   });
