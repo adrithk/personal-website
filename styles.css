@@ -382,6 +382,50 @@ section {
   border-top:1px solid var(--line);
 }
 
+/* Work in progress keeps the same project language, with an explicit status. */
+.project-index-progress { margin-top:42px; }
+.project-index-progress .section-heading { margin-bottom:18px; }
+.project-title-line { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:9px; }
+.project-title-line h2 { margin:0; }
+.project-status-badge {
+  display:inline-flex;
+  align-items:center;
+  flex-shrink:0;
+  padding:4px 8px;
+  border:1px solid var(--purple-edge);
+  border-radius:3px;
+  background:var(--wash-purple);
+  color:var(--accent);
+  font:0.625rem/1.3 var(--mono);
+  letter-spacing:.07em;
+}
+.project-status { display:flex; align-items:center; gap:12px; margin:0 0 22px; color:var(--muted); font:0.75rem/1.6 var(--sans); }
+.project-study {
+  margin:0 0 26px;
+  padding:22px 24px 18px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:radial-gradient(ellipse at 55% 50%,var(--wash-purple),var(--paper) 80%);
+}
+.project-study .figure-label { display:block; color:var(--accent); }
+.project-study svg { display:block; width:100%; height:auto; margin:16px 0 8px; color:var(--accent); }
+.project-study figcaption { color:var(--muted); font:0.75rem/1.7 var(--sans); }
+.project-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:24px 0 12px; border:1px solid var(--line); border-radius:3px; }
+.project-facts > div { padding:20px 18px; }
+.project-facts > div + div { border-left:1px solid var(--line); }
+.project-facts dt { color:var(--muted); font:0.6875rem/1.6 var(--mono); }
+.project-facts dd { margin:8px 0 0; color:var(--ink); font:1.75rem/1.1 var(--display); }
+.project-facts dd small { display:block; margin-top:6px; color:var(--muted); font:0.6875rem/1.5 var(--sans); }
+.project-body .facts-note { font-size:0.75rem; line-height:1.7; margin-top:10px; }
+@media(max-width:560px) {
+  .project-index-progress { margin-top:32px; }
+  .project-title-line { gap:10px; }
+  .project-study { padding:18px 14px; }
+  .project-facts > div { padding:16px 10px; }
+  .project-facts dt { font-size:0.625rem; }
+  .project-facts dd { font-size:1.125rem; white-space:nowrap; }
+}
+
 .below-work {
   display:grid;
   grid-template-columns:1fr 1fr;

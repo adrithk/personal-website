@@ -1,0 +1,103 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010"><title>Ping pong bot — Adrith Kurlagunda</title>
+<meta name="description" content="An in-progress table-tennis robot concept using an SO-101 arm, two cameras, ball tracking, and predictive control for slow, controlled returns.">
+<meta property="og:title" content="Ping pong bot — Adrith Kurlagunda">
+<meta property="og:description" content="An in-progress table-tennis robot concept using an SO-101 arm, two cameras, ball tracking, and predictive control for slow, controlled returns.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+<link rel="preload" href="../../assets/fonts/fraunces-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script src="../../assets/reveal.js" defer></script>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body><a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+<header class="site-header"><a class="wordmark" href="../../index.html" aria-label="Adrith Kurlagunda, home"><span>adrithk</span></a>
+<nav class="nav" aria-label="Main navigation"><a href="../index.html">Projects</a><a class="home-about" href="../../index.html#about">About</a><a class="resume-link" href="../../resume.html">Résumé</a>
+</nav>
+</header>
+<main id="main" tabindex="-1" class="project-main"><a class="back" href="../index.html">← All projects</a>
+<header class="project-header">
+<p class="eyebrow">05 / Robotics &amp; computer vision</p>
+<h1>Ping pong bot</h1>
+<p class="project-lede">See the ball, predict the contact, make the return. A compact table-tennis robot, starting with a deliberately small playing zone.</p>
+<div class="project-status"><span class="project-status-badge">TBD</span><span>In progress · System design and feasibility</span></div>
+<div class="project-meta"><span class="tags">SO-101 · Stereo vision · Ball tracking · Trajectory prediction · Robot control</span></div>
+</header>
+<div class="project-body">
+<figure class="project-study">
+<span class="figure-label">Study / a controlled first return</span>
+<svg viewBox="0 0 680 260" fill="none" role="img" aria-labelledby="bot-study-title bot-study-desc">
+<title id="bot-study-title">Proposed two-camera table-tennis setup</title>
+<desc id="bot-study-desc">An overhead schematic shows two fixed cameras with overlapping views of a table. A slow ball feed approaches a small hitting zone beside a clamped SO-101 arm.</desc>
+<g stroke="currentColor" stroke-width="1.3">
+<path d="M124 48 443 59 443 205Z" fill="currentColor" fill-opacity=".035" stroke-dasharray="3 6" opacity=".4"/>
+<path d="M157 227 442 52 442 205Z" fill="currentColor" fill-opacity=".035" stroke-dasharray="3 6" opacity=".4"/>
+<rect x="169" y="64" width="309" height="139" rx="2"/>
+<path d="M178 73h291v121H178ZM323 64v139" opacity=".35"/>
+<path d="M318 58v151m5-151v151m5-151v151" opacity=".55"/>
+<g transform="translate(106 39) rotate(20)"><rect width="29" height="20" rx="2" fill="var(--paper)"/><path d="m29 5 12-6v22l-12-6Z"/></g>
+<g transform="translate(130 220) rotate(-23)"><rect width="29" height="20" rx="2" fill="var(--paper)"/><path d="m29 5 12-6v22l-12-6Z"/></g>
+<ellipse cx="431" cy="134" rx="25" ry="43" fill="currentColor" fill-opacity=".07" stroke-dasharray="4 5"/>
+<path d="M205 146q101-80 222-15m-10-7 11 7-13 2" stroke="var(--accent-warm)" stroke-dasharray="5 6"/>
+<circle cx="263" cy="123" r="5" fill="var(--accent-warm)" stroke="var(--accent-warm)"/>
+<path d="M584 207v-39l-58-28 25-46-53-13-35 39" stroke-width="3"/>
+<circle cx="526" cy="140" r="9" fill="var(--paper)"/><circle cx="551" cy="94" r="8" fill="var(--paper)"/><circle cx="498" cy="81" r="6" fill="var(--paper)"/>
+<path d="M562 216h44v10h-44zM573 207h22M463 120l-14 8"/>
+<ellipse cx="441" cy="132" rx="8" ry="17" transform="rotate(-25 441 132)" stroke="var(--accent-warm)" fill="var(--paper)"/>
+</g>
+<g fill="var(--muted)" font-family="var(--mono)" font-size="13"><text x="69" y="22">CAMERA A</text><text x="40" y="254">CAMERA B</text><text x="202" y="181">SLOW FEED</text><text x="396" y="234">HIT ZONE</text><text x="530" y="60">SO-101</text></g>
+</svg>
+<figcaption>Proposed bench layout: two fixed views, slow low-spin feeds, and a lightweight paddle working inside a measured reach envelope. Concept schematic.</figcaption>
+</figure>
+
+<h2>A first return, within reach.</h2>
+<p>I’m exploring a table-tennis robot around an SO-101 arm and a simpler camera setup. The first goal is a repeatable return from a slow, controlled feed into a small hitting zone.</p>
+<p>The design work brings together camera placement, 3D ball tracking, flight prediction, and arm timing. The practical question is whether the arm, with a paddle attached, can reach the predicted contact point before the ball arrives.</p>
+<dl class="project-facts" aria-label="Proposed hardware setup">
+<div><dt>Cameras</dt><dd>02</dd></div>
+<div><dt>Camera rate</dt><dd>60 / 120<small>fps options</small></dd></div>
+<div><dt>Robot arm</dt><dd>SO-101</dd></div>
+</dl>
+<p class="facts-note">Proposed setup options. Camera selection, calibration, paddle-loaded speed, and end-to-end timing are still to be validated.</p>
+
+<h2>The proposed sensing-to-motion loop</h2>
+<div class="diagram"><span class="figure-label">Architecture / predictive control first</span>
+<div class="flow">
+<div class="flow-node">Observe<small>Timestamp two camera views</small></div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Estimate<small>3D position and velocity</small></div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Predict<small>Contact point and arrival time</small></div><span class="flow-arrow" aria-hidden="true">→</span>
+<div class="flow-node">Return<small>Reach, swing, recover</small></div>
+</div>
+<p class="diagram-note">Calibration puts the cameras, table, and racket in the same coordinate frame. Timing measurements determine how early a swing must begin.</p>
+</div>
+
+<h2>Design work so far</h2>
+<ul>
+<li><strong>A focused physical layout.</strong> Two fixed cameras watch overlapping views of the incoming flight and hitting zone, with the arm clamped beside the table and a lightweight paddle mount.</li>
+<li><strong>A predictive controller to build first.</strong> Detect and triangulate the ball, estimate its motion, and select a reachable interception with enough time for a restricted swing and recovery.</li>
+<li><strong>A path toward learned control.</strong> A later simulator could combine measured arm response with ball and contact dynamics before exploring a learned return policy.</li>
+</ul>
+<div class="callout"><p><strong>Current stage.</strong> This is a system design and feasibility project. The physical setup, tracking software, controller, and successful returns are still TBD.</p></div>
+
+<h2>What comes next</h2>
+<p>Measure the paddle-loaded arm’s reach and motion, calibrate the cameras, and record sensing and actuation delays. Use those measurements to choose a feasible feed speed, then work toward one repeatable return before expanding the playing zone or training a policy.</p>
+</div>
+<nav class="project-next" aria-label="Project navigation"><a class="back-home" href="../index.html">← All projects</a><a href="../pythongpt/index.html"><span class="next-label">Explore project · TBD</span><span class="next-title">PythonGPT</span></a></nav>
+</main>
+<footer class="site-footer"><span>Adrith Kurlagunda <span aria-hidden="true">·</span> Bay Area, CA</span><nav class="footer-socials" aria-label="Social links">
+<a href="https://github.com/adrithk" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.558 21.923c.563.103.769-.244.769-.542 0-.267-.01-.975-.015-1.914-3.13.68-3.79-1.508-3.79-1.508-.512-1.3-1.25-1.646-1.25-1.646-1.022-.699.078-.685.078-.685 1.13.079 1.724 1.16 1.724 1.16 1.005 1.722 2.638 1.225 3.28.937.103-.728.393-1.225.715-1.507-2.5-.285-5.128-1.25-5.128-5.566 0-1.23.44-2.232 1.16-3.02-.116-.284-.503-1.43.11-2.98 0 0 .946-.303 3.095 1.153a10.79 10.79 0 0 1 5.635 0c2.148-1.456 3.093-1.154 3.093-1.154.614 1.55.228 2.697.112 2.981.722.788 1.158 1.79 1.158 3.02 0 4.328-2.632 5.278-5.14 5.557.404.35.766 1.042.766 2.1 0 1.516-.014 2.739-.014 3.111 0 .3.203.65.774.54A11.252 11.252 0 0 0 12 .75Z"/></svg></a>
+<a href="https://www.linkedin.com/in/adrith-kurlagunda-428865277/" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg></a>
+<a href="https://x.com/adrithk82" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.64 7.584H.47l8.6-9.835L0 1.154h7.594l5.243 6.932 6.064-6.933ZM17.61 20.64h2.039L6.486 3.24H4.298L17.61 20.64Z"/></svg></a>
+<a href="mailto:adrithk@g.ucla.edu" aria-label="Email Adrith" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></a>
+</nav>
+</footer>
+</div>
+</body>
+</html>
