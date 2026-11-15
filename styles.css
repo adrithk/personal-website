@@ -1371,3 +1371,52 @@ section { scroll-margin-top:104px; }
   .scrolltext-on .project-row .sw,
   .scrolltext-on .project-row :is(.project-number,.project-thumb) { opacity:1; }
 }
+
+/* Personal interests: one full-width section. Coffee leads with its photos beside it; the shorter
+   interests are single lines underneath. */
+.personal { padding-top:38px; }
+.interest-feature {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
+  gap:56px;
+  align-items:center;
+  padding:22px 0 0;
+}
+.interest-feature h3 { margin-top:0; font-size:1.6875rem; }
+.interest-feature p { max-width:38ch; margin:0; }
+.interest-feature .coffee-gallery { margin:0; }
+.interest-notes { padding-top:20px; }
+.interest-notes p { margin:0; }
+.interest-notes p + p { margin-top:8px; }
+@media(max-width:760px) {
+  .interest-feature { gap:32px; }
+}
+@media(max-width:560px) {
+  .personal { padding-top:30px; }
+  .interest-feature { grid-template-columns:1fr; gap:18px; padding:20px 0 0; }
+}
+
+/* Tighter vertical rhythm across the site. The full-height opening screen is left as it is. */
+.home-page #work { padding-top:20px; }
+.project-row { padding:24px 0; }
+.projects-action { margin-top:18px; }
+.contact { margin-top:42px; padding:28px 0 30px; }
+.site-footer { padding:14px 0 20px; }
+.project-main { padding-top:32px; }
+.projects-index { padding:32px 0 40px; }
+.resume-main { padding:32px 0 24px; }
+.back,.resume-main .back { margin-bottom:26px; }
+.project-meta { margin-top:22px; padding:18px 0 20px; }
+.project-body { padding-top:26px; }
+.project-body h2 { margin:32px 0 14px; }
+.wide-figure { margin:24px 0; }
+.diagram { margin:22px 0 24px; }
+.callout { margin:24px 0; }
+.project-next { margin-top:34px; padding:24px 0 28px; }
+@media(max-width:560px) {
+  .project-row { padding:20px 0; }
+  .contact { margin-top:30px; padding:24px 0; }
+  .site-footer { padding-top:8px; }
+  .project-main,.resume-main { padding-top:22px; }
+  .back,.resume-main .back { margin-bottom:22px; }
+}

@@ -24,14 +24,14 @@ The GitHub repository is separate from hosting. Pushing this source does not dep
 
 ## Make changes
 
-- **Biography, social links, experience, and interests:** edit `index.html`. The introduction is in `.hero`; the project summaries are in `#work`; experience and coffee are in `#about`.
+- **Biography, social links, and interests:** edit `index.html`. The introduction is in `.hero`; the project summaries are in `#work`; personal interests are in `#about`.
 - **Project collection:** `projects/index.html` lists all available projects and links to their detailed write-ups. Add new project rows here as the collection grows; the homepage’s three featured projects are curated separately. The collection uses `../` to reach shared assets and root pages.
 - **Case studies:** edit the `index.html` inside each folder in `projects/`. Each is a complete standalone page. Homepage summaries are intentionally short and edited separately.
 - **Colors and typography:** edit the named variables at the top of `styles.css`. `--paper`, `--ink`, `--muted`, `--accent`, and `--line` control the palette. `--display`, `--sans`, `--mono`, and `--width` control fonts and page width. `--font-size-base` sets the shared text scale (18px); individual text styles use rem units so the whole site can be resized together without enlarging images or spacing. Upright Fraunces headings and DM Sans body text are bundled in `assets/fonts/`, along with their open-source licenses. Fonts do not make third-party requests.
 - **Shared navigation/footer:** these are plain HTML in all six pages. Update all six when changing common links. Project pages use `../../` to reach the site root so links work on a future static host or under a repository subpath.
 - **Résumé page:** `resume.html` temporarily says “An updated résumé will be uploaded here soon.” It does not display the document or link to its PDF. All header résumé links still open this page; the back link returns to the referring site page when available, with a homepage fallback. `assets/resume.js` handles returning to the previous page.
 - **Restore the résumé later:** replace `assets/Adrith_Kurlagunda_Resume.pdf` and regenerate its preview with `pdftoppm -f 1 -singlefile -scale-to 2200 -png assets/Adrith_Kurlagunda_Resume.pdf assets/resume-preview`. Then replace `.resume-placeholder` in `resume.html` with the preview image and PDF links, using the retained `.resume-document`, `.resume-viewer`, `.resume-pdf-link`, and `.resume-viewer-note` styles. The existing PDF and preview remain in `assets/` for now; the original supplied `Adrith_Kurlagunda_Resume_2030.pdf` was not changed.
-- **Personal Interests, coffee copy, and photos:** edit `.personal` in `index.html`. The three supplied photographs appear as an aligned strip of square crops across the half-width column, with native full-size image links and a short caption. A small burgundy rule separates the sports note. Keep Coffee as a compact aside on desktop, with one short paragraph; it should not become a standalone feature section. Assets live in `assets/coffee/`; the original HEIC files were not changed. The web copies are oriented JPEGs with no EXIF metadata. To add a photo, follow the existing anchor/image structure, with descriptive alt text and the correct image dimensions. Local design proposals in `previews/` are ignored by Git.
+- **Personal Interests:** edit `.personal` in `index.html`. It is one full-width section: Coffee leads (`.interest-feature`) with a short paragraph beside a strip of three square photo crops that link to the full-size images, and shorter interests (politics and economics, sports) are single lines below it (`.interest-notes`). Add another by adding a `<p>` there. Photo assets live in `assets/coffee/`; the web copies are oriented JPEGs with no EXIF metadata. Local design proposals in `previews/` are ignored by Git.
 
 ## Content sources
 
@@ -63,7 +63,7 @@ Font sources: [Fraunces](https://fontsource.org/fonts/fraunces/about) and [DM Sa
 
 Adrith has now authorized the coffee expansion and supplied three photos. Its tone is personal: taking time, relaxing, thinking, making coffee, and exploring neighborhoods through café hopping. Do not turn it into an engineering analogy.
 
-Sports and About Me expansions remain ideas to discuss before implementing. Keep personal content secondary to engineering.
+The earlier “Before UCLA” experience list has been removed from the homepage at Adrith’s request. Keep personal content secondary to engineering.
 
 ## Color direction and references
 

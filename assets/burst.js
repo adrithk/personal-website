@@ -256,15 +256,17 @@ void main(){
   // down is held at the pinned introduction until the colour has settled, then released. Links that jump
   // down the page, and arriving already scrolled, skip the hold.
   let holding = false;
-  let held = HOLD_UNTIL <= 0;  // true once the hold has been used (or skipped) for this visit
+  // true once the hold has been used (or skipped) for this visit; a link to a section (#about) skips it
+  let held = HOLD_UNTIL <= 0 || location.hash.length > 1 || window.scrollY > 6;
   let lastY = window.scrollY;
   const release = () => { holding = false; held = true; };
   const DOWN_KEYS = new Set([' ', 'PageDown', 'End', 'ArrowDown']);
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
     if (!held && !holding && y > 6) {
-      // One jump from the top to beyond the introduction is a restored position or an in-page link.
-      if (lastY <= 6 && y > travel() + 1) release();
+      // The hold only starts from the top with an ordinary scroll. Arriving already down the page, or
+      // one jump to beyond the introduction, is a restored position or an in-page link: no hold.
+      if (lastY > 6 || y > travel() + 1) release();
       else holding = true;
     }
     if (holding && y <= 6) holding = false;  // back at the top: the burst rewinds, and the hold re-arms
