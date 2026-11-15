@@ -1122,7 +1122,7 @@ section {
   .project-row :is(h2,h3) { font-size:1.5625rem; }
 }
 
-/* A full first screen keeps the introduction separate from the project reveals. */
+/* A full first screen keeps the introduction separate from the sections below. */
 .home-page { --home-header-height:82px; }
 .home-page .site-header { height:var(--home-header-height); }
 .home-page .hero {
@@ -1461,4 +1461,26 @@ section { scroll-margin-top:104px; }
   .site-footer { padding-top:8px; }
   .project-main,.resume-main { padding-top:22px; }
   .back,.resume-main .back { margin-bottom:22px; }
+}
+
+/* Research interests lead into the personal section and selected projects. */
+.broader-interests { padding-top:48px; scroll-margin-top:0; }
+.broader-copy {
+  max-width:780px;
+  margin-top:22px;
+}
+.broader-copy p {
+  margin:0 0 12px;
+  font-size:0.9375rem;
+  color:var(--muted);
+  line-height:1.75;
+}
+.broader-copy p:last-child { margin-bottom:0; }
+.home-page .personal,
+.home-page #work { padding-top:64px; }
+@media(max-width:560px) {
+  .broader-interests { padding-top:32px; }
+  .broader-copy p { font-size:0.875rem; }
+  .home-page .personal,
+  .home-page #work { padding-top:44px; }
 }
