@@ -1372,8 +1372,8 @@ section { scroll-margin-top:104px; }
   .scrolltext-on .project-row :is(.project-number,.project-thumb) { opacity:1; }
 }
 
-/* Personal interests: one full-width section. Coffee leads with its photos beside it; the shorter
-   interests are single lines underneath. */
+/* Personal interests: one full-width section. Coffee leads, the shorter interests follow as
+   evenly spaced lines in the same column, and the coffee photos sit beside them. */
 .personal { padding-top:38px; }
 .interest-feature {
   display:grid;
@@ -1385,9 +1385,7 @@ section { scroll-margin-top:104px; }
 .interest-feature h3 { margin-top:0; font-size:1.6875rem; }
 .interest-feature p { max-width:38ch; margin:0; }
 .interest-feature .coffee-gallery { margin:0; }
-.interest-notes { padding-top:20px; }
-.interest-notes p { margin:0; }
-.interest-notes p + p { margin-top:8px; }
+.interest-feature p + p { margin-top:12px; }
 @media(max-width:760px) {
   .interest-feature { gap:32px; }
 }
