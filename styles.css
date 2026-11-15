@@ -161,11 +161,6 @@ button,a {
   color:var(--ink)
 }
 
-.nav .resume-link {
-  color:var(--ink);
-  font-weight:500;
-}
-
 .eyebrow,.section-label,.figure-label {
   font:0.6875rem/1.5 var(--mono);
   text-transform:none;
@@ -949,10 +944,6 @@ section {
 .nav {
   gap:17px;
   font-size:0.6875rem
-}
-
-.nav .home-about {
-  display:none
 }
 
 .hero {
