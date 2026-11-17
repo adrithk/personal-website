@@ -5,15 +5,54 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101010"><title>PythonGPT — Adrith Kurlagunda</title>
-<meta name="description" content="An in-progress Python coding model project: supervised fine-tuning, curated data, teacher distillation, and execution-based evaluation.">
+<meta name="description" content="A 0.5B-parameter Python coding model post-trained from the same base as Qwen's own Instruct model, and benchmarked head-to-head against it.">
 <meta property="og:title" content="PythonGPT — Adrith Kurlagunda">
-<meta property="og:description" content="An in-progress Python coding model project: supervised fine-tuning, curated data, teacher distillation, and execution-based evaluation.">
+<meta property="og:description" content="A 0.5B-parameter Python coding model post-trained from the same base as Qwen's own Instruct model, and benchmarked head-to-head against it.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 <link rel="preload" href="../../assets/fonts/fraunces-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../../assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script src="../../assets/reveal.js" defer></script>
 <link rel="stylesheet" href="../../styles.css">
+<style>
+/* Draft-layout helpers for this page only. Dashed "slots" mark results that are not measured yet. */
+.slot { display:inline-block; min-width:3.4em; padding:0 7px; border:1px dashed var(--purple-edge); border-radius:2px; color:var(--purple-edge); font:0.75rem/1.65 var(--mono); text-align:center; vertical-align:baseline; }
+.project-facts dd .slot { font:1.125rem/1.5 var(--mono); padding:1px 10px; }
+.slot-text { color:var(--purple-edge) !important; border-bottom:1px dashed var(--purple-edge); font-style:normal; }
+.slot-block { position:relative; display:grid; place-items:center; margin:22px 0 10px; padding:26px 18px; border:1px dashed var(--purple-edge); border-radius:3px; color:var(--muted); font:0.75rem/1.7 var(--mono); text-align:center; }
+.slot-block span { color:var(--purple-edge); }
+.slot-chart { aspect-ratio:16/7; padding:0; overflow:hidden; }
+.slot-chart svg { position:absolute; inset:0; width:100%; height:100%; color:var(--line); }
+.slot-chart span { position:relative; padding:4px 10px; background:var(--paper); }
+.figure-caption { color:var(--muted); font:0.75rem/1.7 var(--sans); margin:0 0 6px; }
+.pg-table-wrap { overflow-x:auto; margin:22px 0 10px; border:1px solid var(--line); border-radius:3px; }
+.pg-table { width:100%; border-collapse:collapse; font-size:0.8125rem; line-height:1.55; }
+.pg-table th { padding:11px 14px; border-bottom:1px solid var(--line); color:var(--muted); font:400 0.6875rem/1.5 var(--mono); text-align:left; white-space:nowrap; }
+.pg-table td { padding:11px 14px; border-bottom:1px solid var(--line); color:var(--muted); vertical-align:top; }
+.pg-table tr:last-child td { border-bottom:0; }
+.pg-table td:first-child { color:var(--ink); white-space:nowrap; }
+.pg-table .num { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.pg-table td.num { color:var(--ink); }
+.pg-table tr.is-final td { background:var(--wash-purple); }
+.pg-table tr.is-final td:first-child { color:var(--accent); }
+.pg-table tr.ref td, .pg-table tr.ref td.num { color:var(--muted); }
+.pg-table tr.ref td:first-child { color:var(--muted); }
+.pg-table tr.group-gap td { border-top:1px solid var(--purple-edge); }
+.pg-table tr.total td { color:var(--ink); }
+.pg-code { margin:22px 0 10px; padding:16px 18px; overflow-x:auto; border:1px solid var(--line); border-radius:3px; background:var(--wash); color:var(--ink); font:0.75rem/1.75 var(--mono); }
+.pg-code .c { color:var(--muted); }
+.output-pair { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.output-pair .slot-block { margin:0; min-height:170px; }
+.pg-links { display:flex; flex-wrap:wrap; gap:12px 26px; margin:18px 0 0; padding:0; list-style:none; }
+.project-body .pg-links li { margin:0; padding:0; font-size:0.875rem; }
+@media(max-width:560px) {
+  .output-pair { grid-template-columns:1fr; }
+  .project-facts dd .slot { font-size:0.875rem; padding:1px 6px; }
+  .pg-table th, .pg-table td { padding:10px 10px; }
+  .pg-table td:first-child { white-space:normal; min-width:96px; }
+  .pg-table.wide { min-width:600px; }
+}
+</style>
 </head>
 
 <body><a class="skip" href="#main">Skip to content</a>
@@ -26,57 +65,217 @@
 <header class="project-header">
 <p class="eyebrow">04 / Machine learning &amp; language models</p>
 <h1>PythonGPT</h1>
-<p class="project-lede">Teaching a small language model to write better Python, one measured experiment at a time.</p>
-<div class="project-status"><span class="project-status-badge">TBD</span><span>In progress · Initial supervised model evaluated</span></div>
-<div class="project-meta"><span class="tags">Python · PyTorch · Transformers · TRL · Qwen2.5-Coder · Docker</span></div>
+<p class="project-lede">Starting from the same base weights as Qwen’s own Instruct model, I built a post-training pipeline that matches it on Python coding benchmarks.</p>
+<div class="project-status"><span class="project-status-badge">TBD</span><span>Draft layout · dashed fields fill in as results arrive</span></div>
+<div class="project-meta"><span class="tags">Python · PyTorch · Qwen2.5-Coder · DeepSeek API · Docker · EvalPlus · GRPO · H100</span></div>
 </header>
 <div class="project-body">
+
+<div class="callout"><p><strong>Draft layout.</strong> This page shows how the finished write-up will read. Real numbers so far are the first checkpoint’s scores, the November 17 training-set build and the distillation run; anything in a <span class="slot">dashed box</span> is not measured yet.</p></div>
+
+<h2>Same starting point, same benchmarks.</h2>
+<p>Qwen released two versions of its 0.5B coding model: a raw base checkpoint and an Instruct model, which Qwen’s team post-trained from that base with supervised fine-tuning and preference training. PythonGPT starts from the same base. The question was simple: with my own data, training loop and reinforcement learning, could one person on a small budget get a 0.5B model as good at Python as the official version?</p>
+<p>The final model passes <span class="slot">—.—%</span> of HumanEval+ against the Instruct model’s <span class="slot">—.—%</span>, and <span class="slot">—.—%</span> of MBPP+ against <span class="slot">—.—%</span>, with both models graded by the same harness. That puts it <span class="slot">within / ahead by —.—</span> points on HumanEval+, <span class="slot">+—.—</span> points above the base model it started from, for <span class="slot">$—</span> of rented compute.</p>
+<p>Everything between the base weights and the final checkpoint is my own pipeline: the dataset build, a teacher-distillation stage, a hand-written PyTorch training loop, a sandboxed grader, and a reinforcement-learning stage that rewards the model only when its code passes hidden tests.</p>
+
+<dl class="project-facts" aria-label="Final model results">
+<div><dt>HumanEval+</dt><dd><span class="slot">—.—%</span></dd></div>
+<div><dt>MBPP+</dt><dd><span class="slot">—.—%</span></dd></div>
+<div><dt>vs Qwen Instruct</dt><dd><span class="slot">±—.—</span></dd></div>
+</dl>
+<dl class="project-facts" aria-label="Model and training scale">
+<div><dt>Parameters</dt><dd>0.49B</dd></div>
+<div><dt>SFT examples</dt><dd>135K</dd></div>
+<div><dt>Total compute</dt><dd><span class="slot">$—</span></dd></div>
+</dl>
+<p class="facts-note">pass@1 with one greedy answer per task, a 512-token answer limit, and EvalPlus grading in an isolated container. “vs Qwen Instruct” is the HumanEval+ difference in points against Qwen2.5-Coder-0.5B-Instruct, re-graded under the same protocol.</p>
+
 <figure class="project-study">
-<span class="figure-label">Study / the post-training loop</span>
-<svg viewBox="0 0 680 220" fill="none" role="img" aria-labelledby="python-study-title python-study-desc">
-<title id="python-study-title">From Python examples to a trained model and executable checks</title>
-<desc id="python-study-desc">Curated prompts and solutions feed a small language model. Generated Python is evaluated with function tests, and results guide the next experiment.</desc>
+<span class="figure-label">Study / checkpoint lineage</span>
+<svg viewBox="0 0 680 236" fill="none" role="img" aria-labelledby="pg-lineage-title pg-lineage-desc">
+<title id="pg-lineage-title">Five checkpoints from one base model</title>
+<desc id="pg-lineage-desc">Qwen's Instruct model was post-trained by Qwen from the same base model B0. My work branches B0 into two tracks. The practice track trains S1 with supervised fine-tuning and then R1 with a small reinforcement-learning run. The final track trains S2 on the curated dataset and then R2 with reinforcement learning on executed tests; R2 is PythonGPT.</desc>
 <g stroke="currentColor" stroke-width="1.3">
-<rect x="40" y="38" width="126" height="130" rx="4" opacity=".25"/><rect x="52" y="49" width="126" height="130" rx="4" opacity=".5"/><rect x="64" y="60" width="126" height="130" rx="4" fill="var(--paper)"/>
-<path d="m91 91-9 10 9 10m20-20 9 10-9 10m-6-24-7 28M83 135h87m-87 13h62m-62 13h76"/>
-<path d="M212 119h52m-7-6 7 6-7 6" opacity=".65"/>
-<rect x="291" y="66" width="104" height="104" rx="8" fill="var(--wash-purple)"/>
-<rect x="309" y="84" width="68" height="68" rx="3" opacity=".5"/>
-<path d="M310 52v14m22-14v14m22-14v14m22-14v14m-66 104v14m22-14v14m22-14v14m22-14v14M277 85h14m-14 22h14m-14 22h14m-14 22h14m104-66h14m-14 22h14m-14 22h14m-14 22h14"/>
-<path d="m332 106-10 12 10 12m22-24 10 12-10 12M431 119h50m-7-6 7 6-7 6" opacity=".65"/>
-<rect x="505" y="60" width="132" height="130" rx="4" fill="var(--paper)"/>
-<path d="M505 85h132M518 73h4m7 0h4m7 0h4M525 106h64m-64 14h83m-83 14h49" opacity=".6"/>
-<circle cx="605" cy="157" r="17"/><path d="m597 157 5 5 11-11"/>
-<path d="M570 198v14H126v-14" stroke-dasharray="4 6" opacity=".3"/>
+<rect x="34" y="96" width="108" height="46" rx="4" fill="var(--paper)"/>
+<path d="M142 119c48 0 48-56 96-56M142 119c48 0 48 56 96 56" opacity=".65"/>
+<path d="m231 58 7 5-7 5m0 102 7 5-7 5" opacity=".65"/>
+<rect x="240" y="40" width="110" height="46" rx="4" fill="var(--paper)" opacity=".75"/>
+<rect x="452" y="40" width="110" height="46" rx="4" fill="var(--paper)" opacity=".75"/>
+<path d="M350 63h96m-7-5 7 5-7 5" opacity=".45" stroke-dasharray="4 5"/>
+<rect x="240" y="152" width="110" height="46" rx="4" fill="var(--wash-purple)"/>
+<rect x="452" y="152" width="110" height="46" rx="4" fill="var(--wash-purple)"/>
+<path d="M350 175h96m-7-5 7 5-7 5M562 175h40" opacity=".65"/>
+<circle cx="624" cy="175" r="17"/><path d="m616 175 5 5 11-11"/>
 </g>
-<g fill="var(--muted)" font-family="var(--mono)" font-size="13"><text x="64" y="24">01 / CURATE</text><text x="291" y="24">02 / TRAIN</text><text x="505" y="24">03 / EXECUTE</text></g>
+<g font-family="var(--mono)" font-size="13" text-anchor="middle" fill="var(--ink)">
+<text x="88" y="124">B0 · base</text>
+<text x="295" y="68" opacity=".8">S1 · SFT</text><text x="507" y="68" opacity=".8">R1 · RL</text>
+<text x="295" y="180">S2 · SFT</text><text x="507" y="180">R2 · RL</text>
+</g>
+<g font-family="var(--mono)" font-size="11" fill="var(--muted)">
+<text x="34" y="24">01 / START</text><text x="240" y="24">02 / PRACTICE TRACK</text><text x="240" y="226">03 / FINAL TRACK</text>
+<text x="600" y="214">PythonGPT</text>
+</g>
+<g stroke="currentColor" stroke-width="1.3" opacity=".5" stroke-dasharray="3 5"><path d="M88 142v36"/><rect x="34" y="178" width="108" height="30" rx="4"/></g>
+<text x="88" y="197" font-family="var(--mono)" font-size="11" fill="var(--muted)" text-anchor="middle">Qwen Instruct</text>
 </svg>
-<figcaption>Curate the examples, train the model, then check the code it actually produces. The next experiment starts with those results.</figcaption>
+<figcaption>Qwen’s Instruct model and both of my tracks start from the same base weights, so the final comparison is post-training against post-training. The practice track tested the whole loop; the final track is the released model.</figcaption>
 </figure>
 
-<h2>A small model, a complete training loop.</h2>
-<p>I’m post-training Qwen2.5-Coder-0.5B from its base checkpoint to specialize in Python coding. The project connects dataset preparation, supervised fine-tuning, checkpoint saving and reloading, and execution-based evaluation.</p>
-<p>The first supervised run used OpenCoder’s educational instruction data. With an initial checkpoint now evaluated, the focus is on improving the training examples and comparing recipes under the same evaluation setup.</p>
+<h2>Head-to-head with Qwen’s Instruct model</h2>
+<p>Before the final run I fixed the target: PythonGPT counts as a success if it scores within <span class="slot">—</span> points of Qwen2.5-Coder-0.5B-Instruct on HumanEval+ and MBPP+, or above it. Published scores use each team’s own prompts and settings, so I downloaded the Instruct model and re-graded it with exactly the harness I use for my own checkpoints.</p>
+<div class="pg-table-wrap">
+<table class="pg-table wide">
+<thead><tr><th>Benchmark</th><th class="num">PythonGPT</th><th class="num">Qwen Instruct</th><th class="num">Difference</th><th class="num">Qwen published</th></tr></thead>
+<tbody>
+<tr><td>HumanEval</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">±—.—</span></td><td class="num">61.6</td></tr>
+<tr class="is-final"><td>HumanEval+</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">±—.—</span></td><td class="num">57.3</td></tr>
+<tr><td>MBPP</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">±—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr class="is-final"><td>MBPP+</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">±—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+</tbody>
+</table>
+</div>
+<p class="facts-note">pass@1, % of tasks. The middle columns use my protocol for both models; “Qwen published” is from the Qwen2.5-Coder technical report, under Qwen’s settings. A <span class="slot">paired test / confidence interval</span> on the per-problem results shows whether the difference is larger than noise.</p>
+<div class="slot-block slot-chart" role="img" aria-label="Placeholder for benchmark comparison chart">
+<svg viewBox="0 0 640 280" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M48 24v222h568" stroke="currentColor"/><g stroke="var(--purple-edge)" stroke-dasharray="4 5" opacity=".5"><rect x="92" y="80" width="44" height="166"/><rect x="142" y="88" width="44" height="158"/><rect x="232" y="98" width="44" height="148"/><rect x="282" y="104" width="44" height="142"/><rect x="372" y="130" width="44" height="116"/><rect x="422" y="126" width="44" height="120"/><rect x="512" y="150" width="44" height="96"/><rect x="562" y="146" width="44" height="100"/></g></svg>
+<span>Chart · PythonGPT vs Qwen Instruct on each benchmark</span>
+</div>
+<p class="figure-caption">Qwen’s team had a full post-training pipeline at industrial scale. PythonGPT used 135K curated examples, <span class="slot">—</span> RL updates and about <span class="slot">$—</span> of compute.</p>
 
-<h2>The first checkpoint</h2>
-<dl class="project-facts" aria-label="Initial supervised model results">
-<div><dt>Model scale</dt><dd>0.5B</dd></div>
-<div><dt>HumanEval</dt><dd>30.5%</dd></div>
-<div><dt>HumanEval+</dt><dd>28.0%</dd></div>
-</dl>
-<p class="facts-note">Initial SFT results recorded November 11, 2026: pass@1 across 164 tasks, with one greedy answer per task. A same-protocol base-model comparison is still pending, so these scores establish a starting point rather than a measured training gain.</p>
+<h2>Five checkpoints, one yardstick</h2>
+<p>Every checkpoint is graded with the same prompts, decoding settings, answer limit and sandbox, so each row isolates one change. HumanEval and MBPP problems never enter training data, teacher prompts or reward design; the dataset build drops anything that resembles them.</p>
+<div class="pg-table-wrap">
+<table class="pg-table wide">
+<thead><tr><th>Checkpoint</th><th>What changed</th><th class="num">HumanEval</th><th class="num">HumanEval+</th><th class="num">MBPP+</th></tr></thead>
+<tbody>
+<tr><td>B0</td><td>Qwen2.5-Coder-0.5B base, no post-training</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr><td>S1</td><td>First SFT · OpenCoder educational set, ~117K rows</td><td class="num">30.5</td><td class="num">28.0</td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr><td>R1</td><td>S1 + small practice RL run</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr><td>S2</td><td>Curated SFT · 135K test-verified rows</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr class="is-final"><td>R2 · PythonGPT</td><td>S2 + GRPO on executed tests</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+<tr class="ref group-gap"><td>Qwen Instruct · target</td><td>Qwen’s own post-training of B0 · SFT + DPO, re-graded here</td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td><td class="num"><span class="slot">—.—</span></td></tr>
+</tbody>
+</table>
+</div>
+<p class="facts-note">pass@1, % of tasks, every row graded by the same harness. The table reads as a path: how far each stage moved the model from B0 toward the Instruct target.</p>
 
-<h2>What’s in place</h2>
+<h2>Building the training set</h2>
+<p>The first checkpoint trained on about 117K rows from a single dataset and reached 28.0% on HumanEval+. More rows of the same kind were not likely to help, so for S2 I rebuilt the data around one rule: a row counts only if its code runs and its tests pass.</p>
 <ul>
-<li><strong>Supervised training and evaluation.</strong> A Python preparation and training workflow, saved-checkpoint inference, and a HumanEval / HumanEval+ runner separate answer generation from isolated correctness grading.</li>
-<li><strong>Teacher distillation in three stages.</strong> The program assigns skills, question forms, and difficulty; DeepSeek generates problems, solutions, and tests. A verification stage is designed to execute solutions in Docker, check signatures and docstring examples, and filter failed attempts.</li>
-<li><strong>A common data pipeline.</strong> Curation scripts bring several public coding datasets and distilled examples into one format, remove repeats, screen for benchmark overlap, and build model-ready training and validation splits.</li>
+<li><strong>Collect.</strong> Pull each source, convert every row to one shape (instruction, code, tests), strip examples and prints from the code, and reject anything that needs files, the network, user input or non-standard packages.</li>
+<li><strong>Verify.</strong> Re-run every row’s tests in a Docker container with no network and a time limit. Rows that fail are dropped.</li>
+<li><strong>Build.</strong> Drop rows over 1,024 tokens, exact and near repeats, and anything whose function name or wording matches a HumanEval+ or MBPP+ task; cap any one function name at 30 rows; hold out 1,000 tested rows for validation.</li>
 </ul>
-<div class="callout"><p><strong>Current stage.</strong> The initial SFT checkpoint has been evaluated. The newer distillation and curation tools have offline checks and small data-format trials; their full Docker workflow, dataset yield, and effect on model quality remain to be measured.</p></div>
+<div class="pg-table-wrap">
+<table class="pg-table wide">
+<thead><tr><th>Source</th><th>What it is</th><th class="num">Rows kept</th></tr></thead>
+<tbody>
+<tr><td>OpenCodeInstruct</td><td>NVIDIA’s ~5M synthetic rows; kept only rows whose recorded tests all passed and every judge score was 5</td><td class="num">93,104</td></tr>
+<tr><td>Self-OSS-Instruct</td><td>BigCode’s 50K execution-filtered instructions</td><td class="num">39,289</td></tr>
+<tr><td>DeepSeek distillation</td><td>My own teacher-written problems with verified solutions and tests</td><td class="num">3,013</td></tr>
+<tr class="total group-gap"><td>Training set</td><td>49.7M tokens · median 354 per row · plus 1,000 validation rows</td><td class="num">135,406</td></tr>
+</tbody>
+</table>
+</div>
+<p class="facts-note">From the November 17, 2026 build. Of roughly 3.08M OpenCodeInstruct rows read, 2.07M had failed their own tests upstream; across all sources, the build then removed 54,670 near repeats and 1,426 benchmark lookalikes.</p>
 
-<h2>The next experiment</h2>
-<p>Run a bounded distillation pilot, inspect accepted examples, and build the next curated training set. Compare the resulting supervised model with the original base under a consistent protocol, then explore reinforcement learning with rewards from executable Python tests.</p>
-<p>PythonGPT remains an active experiment. The final model, larger training results, and reinforcement-learning results are TBD.</p>
+<h3>Distilling a teacher</h3>
+<p>Asking a model to “be diverse” produces repeats, so the program decides the mix: it picks a skill from a list of about 235, a form (plain request, signature-and-docstring to complete, or buggy function to fix) and a difficulty, and DeepSeek writes ten questions per call. A second stage writes a solution plus six to ten tests for each. A third runs everything in Docker and keeps a row only if every test passes, the docstring examples written with the question still hold, and, for fix tasks, at least one test fails on the original bug.</p>
+<dl class="project-facts" aria-label="Distillation results">
+<div><dt>Accepted rows</dt><dd>3,071</dd></div>
+<div><dt>Passed first try</dt><dd>96%</dd></div>
+<div><dt>Cost per row</dt><dd>$0.006</dd></div>
+</dl>
+<p class="facts-note">November 15–16, 2026 runs, computed from saved token usage at peak prices. The first-try rate is from the first full run.</p>
+
+<h2>Training</h2>
+<h3>A hand-written training loop</h3>
+<p>Instead of a library trainer, S2 runs on a training loop I wrote in plain PyTorch around the Hugging Face model class. Each update takes 64 rows, sorts them by length and splits them into chunks of at most 16,000 padded positions, so long and short rows don’t waste memory on padding. Loss covers only the answer tokens and is weighted by token count across chunks, so splitting a batch never changes the gradient. I checked the loop against the library’s loss on real data and confirmed that a resumed run reproduces an uninterrupted one exactly.</p>
+<div class="pg-table-wrap">
+<table class="pg-table">
+<thead><tr><th>Setting</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Hardware</td><td>1× H100, rented on Vast.ai</td></tr>
+<tr><td>Optimizer</td><td>AdamW, no weight decay, gradient clipping at 1.0</td></tr>
+<tr><td>Learning rate</td><td>5e-5 peak · warmup then cosine decay</td></tr>
+<tr><td>Batch</td><td>64 rows per update · <span class="slot">—</span> updates over <span class="slot">—</span> epochs</td></tr>
+<tr><td>Precision</td><td>FP32 weights, bf16 autocast</td></tr>
+<tr><td>Wall-clock · cost</td><td><span class="slot">— h</span> · <span class="slot">$—</span></td></tr>
+<tr><td>Final validation loss</td><td><span class="slot">—.———</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="slot-block slot-chart" role="img" aria-label="Placeholder for training and validation loss chart">
+<svg viewBox="0 0 640 280" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M48 24v222h568" stroke="currentColor"/><path d="M48 70c60 70 120 110 200 128s200 24 368 30" stroke="var(--purple-edge)" stroke-dasharray="5 6" opacity=".55"/></svg>
+<span>Chart · S2 training and validation loss per update</span>
+</div>
+<p class="figure-caption">Validation runs every 500 updates; the checkpoint with the lowest validation loss becomes S2.</p>
+
+<h2>Reinforcement learning on executed tests</h2>
+<p>Supervised training copies good answers. Reinforcement learning lets the model learn from its own attempts. Starting from S2, the model writes eight solutions to each problem, a sandbox runs hidden tests on each one, and a solution earns a reward of 1 only if every test passes. GRPO then makes the passing solutions more likely relative to the failing ones in the same group. Problems the model always solves or never solves teach nothing, so the task bank favors problems it gets right some of the time.</p>
+<ul>
+<li><strong>Task bank.</strong> <span class="slot">—</span> verified problems with hidden tests, filtered so S2 solves roughly 10–80% of them.</li>
+<li><strong>Sandbox.</strong> Generated code is untrusted: isolated workers with no network, no access to the tests, and limits on time, memory and output. Infrastructure failures are retried, not scored as wrong.</li>
+<li><strong>Reward.</strong> Pass or fail on correctness only, with no credit for style, length or partial tests.</li>
+</ul>
+<div class="pg-table-wrap">
+<table class="pg-table">
+<thead><tr><th>Setting</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Algorithm</td><td>GRPO, no reward std scaling (Dr. GRPO loss) · KL to frozen S2</td></tr>
+<tr><td>Samples per problem</td><td>8</td></tr>
+<tr><td>Problems per update</td><td>8</td></tr>
+<tr><td>Learning rate</td><td>1e-6</td></tr>
+<tr><td>Sampling</td><td>temperature 0.8 · answer cap <span class="slot">—</span> tokens</td></tr>
+<tr><td>Updates · rollout tokens</td><td><span class="slot">—</span> · <span class="slot">—M</span></td></tr>
+<tr><td>Wall-clock · cost</td><td><span class="slot">— h</span> · <span class="slot">$—</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="slot-block slot-chart" role="img" aria-label="Placeholder for RL reward and held-out accuracy chart">
+<svg viewBox="0 0 640 280" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M48 24v222h568" stroke="currentColor"/><path d="M48 200c90-30 180-60 270-80s200-34 298-40" stroke="var(--purple-edge)" stroke-dasharray="5 6" opacity=".55"/><path d="M48 214c90-14 180-30 270-40s200-14 298-18" stroke="var(--purple-edge)" stroke-dasharray="2 6" opacity=".45"/></svg>
+<span>Chart · training reward vs held-out pass@1 across RL updates</span>
+</div>
+<p class="figure-caption">Training reward rising without held-out gains would mean the model is gaming its training problems; this chart is the check.</p>
+
+<h2>What the model writes</h2>
+<p>The same held-out prompt, answered by the first checkpoint and by the final model.</p>
+<pre class="pg-code"><span class="c"># prompt</span>
+def running_max(numbers: list[int]) -&gt; list[int]:
+    """Return a list where each element is the largest value seen so far.
+    &gt;&gt;&gt; running_max([1, 3, 2, 5, 4])
+    [1, 3, 3, 5, 5]
+    """</pre>
+<div class="output-pair">
+<div class="slot-block"><div>S1 output<br><span>[ generated code ]</span><br><span>[ pass / fail ]</span></div></div>
+<div class="slot-block"><div>PythonGPT output<br><span>[ generated code ]</span><br><span>[ pass / fail ]</span></div></div>
+</div>
+
+<h3>Where it still fails</h3>
+<div class="slot-block"><div>Breakdown of HumanEval+ failures<br><span>[ wrong answer · runtime error · timeout · cut off at the answer limit ]</span></div></div>
+<p class="figure-caption"><span class="slot-text">One or two sentences on the most common failure and why.</span></p>
+
+<h2>What I learned</h2>
+<ul>
+<li><strong>Closing the gap to Instruct.</strong> <span class="slot-text">Which stage closed most of the gap, and what was left at the end.</span></li>
+<li><strong>Data quality over data volume.</strong> <span class="slot-text">What changed between S1 and S2, and how much it mattered.</span></li>
+<li><strong>Verification is the real work.</strong> <span class="slot-text">What the Docker checks caught that reading would have missed.</span></li>
+<li><strong>What RL added.</strong> <span class="slot-text">The S2 → R2 gain and what it cost compared with more SFT.</span></li>
+</ul>
+
+<h2>Limits</h2>
+<ul>
+<li>The benchmark screen matches function names and wording; it can’t catch the same problem in different words, and the base model’s pretraining data can’t be audited.</li>
+<li>In distillation, the teacher writes both the solution and its tests, so a shared misunderstanding can pass. Hand-reading samples is the only check on that.</li>
+<li>PythonGPT is tuned for Python functions; the Instruct model is a general coding assistant. Matching it on these benchmarks doesn’t mean matching it on chat, other languages or long programs.</li>
+<li>Results are from <span class="slot">—</span> seed(s); small differences between checkpoints, or against Instruct, may be noise.</li>
+</ul>
+
+<ul class="pg-links">
+<li>Code · <span class="slot">GitHub link</span></li>
+<li>Weights · <span class="slot">Hugging Face link</span></li>
+<li>Training log · <span class="slot">link</span></li>
+</ul>
 </div>
 <nav class="project-next" aria-label="Project navigation"><a class="back-home" href="../index.html">← All projects</a><a href="../ping-pong-bot/index.html"><span class="next-label">Next project · TBD</span><span class="next-title">Ping pong bot</span></a></nav>
 </main>
