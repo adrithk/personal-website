@@ -201,6 +201,7 @@
     showHint();
     fadeOut = 1 - smooth(0, VH * .6, scrollY);
     canvas.style.opacity = fadeOut.toFixed(3);
+    if (hint) hint.style.setProperty('--fade', fadeOut.toFixed(3));
     canvas.style.transform = `translate3d(0,${(-scrollY * DRIFT).toFixed(1)}px,0)`;
     if (fadeOut <= 0) { requestAnimationFrame(frame); return; }
 
@@ -298,7 +299,7 @@
   }
 
   // A small hint in the introduction telling visitors they can drop a ball. It is added here, so it only
-  // exists when the terrain does; it fades in once the terrain has loaded and stays.
+  // exists when the terrain does; it fades in once the terrain has loaded, then fades out with the backdrop on scroll.
   const hero = document.querySelector('.hero .hero-copy');
   let hint = null, hintDone = reduce || !hero;
   if (!hintDone) {
@@ -309,7 +310,11 @@
     hint.innerHTML = `<span class="terrain-hint-dot"></span>${verb} anywhere to run gradient descent`;
     hero.append(hint);
   }
-  const showHint = () => { if (!hintDone && built && t - born > 1.1) hint.classList.add('on'); };
+  const showHint = () => {
+    if (hintDone || !built || t - born <= 1.1) return;
+    hintDone = true; hint.classList.add('on');
+    setTimeout(() => hint.classList.add('settled'), 800); // after the fade-in, track the scroll fade closely
+  };
 
   let lastWidth = 0;
   addEventListener('resize', () => {

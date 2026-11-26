@@ -1275,7 +1275,9 @@ section {
   transition:opacity 700ms ease;
   pointer-events:none;
 }
-.terrain-hint.on { opacity:.9; }
+/* Once shown, the hint follows the backdrop's scroll fade (terrain.js sets --fade) without lagging behind it. */
+.terrain-hint.on { opacity:calc(.9 * var(--fade, 1)); }
+.terrain-hint.on.settled { transition:opacity 80ms linear; }
 .terrain-hint-dot {
   width:6px;
   height:6px;
@@ -1293,6 +1295,43 @@ section {
 }
 @media print {
   .terrain-canvas, .terrain-hint { display:none; }
+}
+
+/* Lidar cursor (assets/lidar-bot.js). Below the introduction the script draws the pointer's point cloud and any
+   autonomous vehicles on one fixed canvas above the page that never takes clicks; the cursor itself is unchanged. */
+.lidar-canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:40;
+  pointer-events:none;
+  display:block;
+}
+/* The hint lidar-bot.js keeps in the bottom-right corner whenever the lidar is on: small and faint, and fainter
+   still once a vehicle has been deployed. */
+.lidar-hint {
+  position:fixed;
+  right:18px;
+  bottom:14px;
+  z-index:41;
+  margin:0;
+  font:0.5625rem var(--mono);
+  letter-spacing:.04em;
+  color:#fff;
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity 600ms ease;
+  pointer-events:none;
+}
+.lidar-hint.on { opacity:.38; }
+.lidar-hint.on.used { opacity:.2; }
+@media (hover:none), (pointer:coarse), (prefers-reduced-motion:reduce) {
+  .lidar-canvas, .lidar-hint { display:none; }
+}
+@media print {
+  .lidar-canvas, .lidar-hint { display:none; }
 }
 
 /* Readable small text: labels, descriptions, dates, captions and the footer, one or two steps up
