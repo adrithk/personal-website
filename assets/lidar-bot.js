@@ -41,7 +41,7 @@
   const hintEl = document.createElement('p');
   hintEl.className = 'lidar-hint';
   hintEl.setAttribute('aria-hidden', 'true');
-  hintEl.innerHTML = 'click to deploy<br>an autonomous vehicle'; // two short lines, so it fits beside the page column
+  hintEl.innerHTML = 'click anywhere to deploy<br>an autonomous vehicle'; // two short lines, so it fits beside the page column
   document.body.appendChild(hintEl);
   const ctx = canvas.getContext('2d');
   let W = 0, H = 0, DPR = 1;
