@@ -3,7 +3,8 @@
 // out as a fading point cloud around the pointer. Hovering a link locks brackets onto it. A click anywhere deploys a
 // tiny autonomous vehicle that drives around the page on its own, steering around content blocks with its own
 // short-range lidar and leaving faint tyre tracks; the oldest one parks and fades once there are more than MAX_ROVERS.
-// A faint fixed hint in the bottom-right corner says so while the lidar is on, dimming further after the first click. Above the fold nothing changes, so the
+// A small fixed hint in the bottom-right corner says so while the lidar is on. It steps aside (fades out) whenever
+// text, an image or a divider line scrolls underneath it, and the vehicles steer around it. Above the fold nothing changes, so the
 // terrain's click-to-drop-a-ball still works there.
 // Mouse and trackpad only: touch screens and reduced motion keep the ordinary page. Styles are in the
 // "Lidar cursor" block of styles.css.
@@ -40,7 +41,7 @@
   const hintEl = document.createElement('p');
   hintEl.className = 'lidar-hint';
   hintEl.setAttribute('aria-hidden', 'true');
-  hintEl.textContent = 'click to deploy an autonomous vehicle';
+  hintEl.innerHTML = 'click to deploy<br>an autonomous vehicle'; // two short lines, so it fits beside the page column
   document.body.appendChild(hintEl);
   const ctx = canvas.getContext('2d');
   let W = 0, H = 0, DPR = 1;
@@ -54,7 +55,7 @@
   // `blocks`: one box per element, for the rovers to drive around (they would get stuck between lines of text).
   const TEXT = 'main h2, main h3, main p, main .tags, main figcaption, main .section-heading span, main .project-number, main .all-projects-link, main .contact > a, .site-footer > span';
   const BOX = 'main img, main .project-thumb svg, .footer-socials a';
-  let lines = [], blocks = [], heroBottom = 0, docH = 0, docW = 0;
+  let lines = [], blocks = [], rules = [], heroBottom = 0, docH = 0, docW = 0;
   const range = document.createRange();
   const collect = () => {
     const sx = scrollX, sy = scrollY, L = [], B = [];
@@ -77,7 +78,18 @@
       const q = el.getBoundingClientRect();
       push(L, q.left, q.top, q.right, q.bottom); push(B, q.left, q.top, q.right, q.bottom);
     }
-    lines = L; blocks = B;
+    // Divider lines (any visible top or bottom border), so the hint can keep clear of them too.
+    const R = [];
+    for (const el of document.querySelectorAll('.site-header, .site-footer, main *')) {
+      const cs = getComputedStyle(el);
+      if (parseFloat(cs.borderTopWidth) === 0 && parseFloat(cs.borderBottomWidth) === 0) continue;
+      const q = el.getBoundingClientRect();
+      if (q.width < 2) continue;
+      if (parseFloat(cs.borderTopWidth) > 0) push(R, q.left, q.top - 1, q.right, q.top + 2);
+      if (parseFloat(cs.borderBottomWidth) > 0) push(R, q.left, q.bottom - 2, q.right, q.bottom + 1);
+    }
+    lines = L; blocks = B; rules = R;
+    hintBox = hintEl.getBoundingClientRect();
     heroBottom = hero.getBoundingClientRect().bottom + sy;
     docH = root.scrollHeight; docW = root.clientWidth;
   };
@@ -112,7 +124,18 @@
   // ---- Pointer ----
   const m = { x:0, y:0, px:0, py:0, seen:false, inside:false };
   let active = false, mix = 0, sweep = 0, hoverEl = null, hoverMix = 0, hoverBox = null;
-  const syncHint = () => hintEl.classList.toggle('on', active);
+  // The hint shows while the lidar is on, unless something on the page is passing underneath it.
+  let hintBox = null, hintClear = true;
+  const overlaps = (boxes, sx, sy, pad) => {
+    const l = hintBox.left - pad + sx, r = hintBox.right + pad + sx, t = hintBox.top - pad + sy, b = hintBox.bottom + pad + sy;
+    for (let i = 0; i < boxes.length; i++) { const q = boxes[i]; if (q.l < r && q.r > l && q.t < b && q.b > t) return true; }
+    return false;
+  };
+  const syncHint = () => {
+    if (active && hintBox) hintClear = !overlaps(lines, scrollX, scrollY, 8) && !overlaps(rules, scrollX, scrollY, 8);
+    hintEl.classList.toggle('on', active);
+    hintEl.classList.toggle('blocked', !hintClear);
+  };
   const check = () => {
     const next = hero.getBoundingClientRect().bottom < innerHeight * ACTIVATE_AT;
     if (next !== active) { active = next; syncHint(); wake(); }
@@ -129,10 +152,11 @@
   document.addEventListener('pointerover', e => {
     hoverEl = e.target.closest ? e.target.closest('a, button, summary, label, [role="button"]') : null;
   });
-  addEventListener('scroll', () => { check(); wake(); }, { passive:true });
+  addEventListener('scroll', () => { check(); syncHint(); wake(); }, { passive:true });
 
   // ---- Rovers ----
   const rovers = [], rings = [];
+  let obstacles = [];
   let now = performance.now();
   const spawn = (x, y) => {
     const alive = rovers.filter(r => !r.dying);
@@ -150,9 +174,9 @@
 
   const updateRover = (r, dt) => {
     const look = 44, spread = .55;
-    const dl = cast(blocks, r.x, r.y, Math.cos(r.h - spread), Math.sin(r.h - spread), look);
-    const df = cast(blocks, r.x, r.y, Math.cos(r.h), Math.sin(r.h), look);
-    const dr = cast(blocks, r.x, r.y, Math.cos(r.h + spread), Math.sin(r.h + spread), look);
+    const dl = cast(obstacles, r.x, r.y, Math.cos(r.h - spread), Math.sin(r.h - spread), look);
+    const df = cast(obstacles, r.x, r.y, Math.cos(r.h), Math.sin(r.h), look);
+    const dr = cast(obstacles, r.x, r.y, Math.cos(r.h + spread), Math.sin(r.h + spread), look);
     r.turn = (r.turn + (Math.random() - .5) * 7 * dt) * Math.pow(.35, dt);
     let steer = r.turn;
     const near = Math.min(df, dl * 1.3, dr * 1.3);
@@ -239,6 +263,10 @@
       }
     }
 
+    // The vehicles treat the hint, where it currently sits on the page, as one more block to drive around.
+    obstacles = active && hintClear && hintBox
+      ? blocks.concat({ l:hintBox.left - 6 + sx, t:hintBox.top - 6 + sy, r:hintBox.right + 6 + sx, b:hintBox.bottom + 6 + sy })
+      : blocks;
     for (const r of rovers) updateRover(r, dt);
     for (let i = rovers.length - 1; i >= 0; i--) if (rovers[i].dying && t - rovers[i].dying > 700) rovers.splice(i, 1);
     for (let i = rings.length - 1; i >= 0; i--) if (t - rings[i].t > 700) rings.splice(i, 1);
