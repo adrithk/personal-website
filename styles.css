@@ -1244,58 +1244,21 @@ section {
 .contact > a { text-decoration-color:var(--accent-warm); }
 .contact > a:hover { text-decoration-color:var(--accent); }
 
-/* Homepage opening burst (assets/burst.js). Every rule here is inert until the script adds .burst-on,
-   so the page is unchanged without JavaScript, without WebGL, or with reduced motion. */
-:root { --burst-scroll:45vh; }
-
-/* The colour field sits behind the whole page, above the page background. */
-.burst-canvas {
+/* Homepage terrain (assets/terrain.js). A fixed backdrop behind the introduction; while scrolling, the script
+   drifts it up a little and fades it out, so the next section arrives on the plain page. */
+.terrain-canvas {
   position:fixed;
-  inset:0;
-  width:100vw;
-  height:100lvh;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
   z-index:-1;
   pointer-events:none;
   display:block;
+  will-change:opacity, transform;
 }
-
-/* The introduction stays pinned below the (always sticky) top bar while the burst plays,
-   then releases once the hold distance has been scrolled. */
-.burst-on .burst-stage { height:calc(100svh - var(--home-header-height) + var(--burst-scroll)); }
-.burst-on .burst-stage .hero {
-  position:sticky;
-  top:var(--home-header-height);
-  --p:0;
-}
-
-/* Before the burst: the top bar, the UCLA line, the name, and a small arrow. Everything else arrives as the colour
-   settles. --p runs from 0 to 1 and is set by the script. */
-.burst-on .hero :is(.intro,.hero-note,.socials,.hero-art) {
-  opacity:clamp(0,calc((var(--p) - var(--from,.4)) * 4),1);
-  transform:translateY(calc((1 - clamp(0,calc((var(--p) - var(--from,.4)) * 4),1)) * 14px));
-  transition:none;
-}
-.burst-on .hero .hero-art { --from:.4; }
-.burst-on .hero .intro { --from:.48; }
-.burst-on .hero .hero-note { --from:.56; }
-.burst-on .hero .socials { --from:.64; }
-.burst-on .hero :is(.intro,.hero-note,.socials):focus-within { opacity:1; transform:none; }
-
-.burst-on .hero .scroll-cue span:first-child {
-  position:absolute;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-  clip-path:inset(50%);
-  white-space:nowrap;
-}
-.burst-on .hero .scroll-cue { opacity:clamp(0,calc(1 - var(--p) * 5),1); }
-
 @media print {
-  .burst-canvas { display:none; }
-  .burst-on .burst-stage { height:auto; margin:0; }
-  .burst-on .burst-stage .hero { position:static; }
-  .burst-on .hero :is(.intro,.hero-note,.socials,.hero-art) { opacity:1; transform:none; }
+  .terrain-canvas { display:none; }
 }
 
 /* Readable small text: labels, descriptions, dates, captions and the footer, one or two steps up
@@ -1359,11 +1322,9 @@ section {
   }
 }
 
-/* Sticky top bar on every page, with a frosted backdrop that spans the window.
-   On the homepage, burst.js adds .header-clear while the opening colour is behind the bar. */
+/* Sticky top bar on every page, with a frosted backdrop that spans the window. */
 html { scroll-padding-top:104px; overflow-x:clip; }
 section { scroll-margin-top:104px; }
-.burst-head { display:contents; }
 .site-header { position:sticky; top:0; z-index:5; }
 .site-header::before {
   content:'';
@@ -1379,7 +1340,6 @@ section { scroll-margin-top:104px; }
   transition:opacity 240ms ease;
   pointer-events:none;
 }
-.header-clear .site-header::before { opacity:0; }
 .nav a { padding:12px 0; margin:-12px 0; }
 .nav a[aria-current="page"] {
   color:var(--ink);
