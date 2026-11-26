@@ -261,7 +261,7 @@ section {
   margin:0
 }
 
-.section-heading span {
+.section-heading > span {
   font:0.6875rem var(--mono);
   color:var(--muted)
 }
@@ -1273,7 +1273,7 @@ section {
 .socials svg { width:15px; height:15px; }
 .hero-art figcaption { font-size:0.6875rem; white-space:nowrap; }
 .section-heading h2,
-.section-heading span { font-size:0.75rem; }
+.section-heading > span { font-size:0.75rem; }
 .project-number { font-size:0.75rem; }
 .project-row p { font-size:0.9375rem; line-height:1.7; max-width:560px; }
 .tags { font-size:0.6875rem; }
@@ -1365,6 +1365,17 @@ section { scroll-margin-top:104px; }
 @media print {
   .scrolltext-on .project-row .sw,
   .scrolltext-on .project-row :is(.project-number,.project-thumb) { opacity:1; }
+}
+
+/* Homepage section titles are set as headings in the display face (the number beside "Selected work"
+   stays a small mono label). */
+.home-page .section-heading h2 {
+  font:400 clamp(1.75rem,3.2vw,2.25rem)/1.15 var(--display);
+  letter-spacing:-.025em;
+}
+.home-page .section-heading { padding-bottom:16px; }
+@media(max-width:560px) {
+  .home-page .section-heading h2 { font-size:1.625rem; }
 }
 
 /* Personal interests: one full-width section. Coffee leads, the shorter interests follow as
