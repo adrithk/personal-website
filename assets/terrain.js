@@ -79,7 +79,7 @@
     wx = new Float32Array(total); hts = new Float32Array(total); lit = new Float32Array(total);
     appear = new Float32Array(total); textFade = new Float32Array(total);
     // Behind the copy and the diagram the dots dim a little (never disappear), with a soft edge.
-    const boxes = [...document.querySelectorAll('.hero .hero-copy > *, .hero .hero-art')].map(el => {
+    const boxes = [...document.querySelectorAll('.hero .hero-copy > *, .hero .hero-art, .terrain-hint')].map(el => {
       const r = el.getBoundingClientRect(), top = r.top + scrollY; return { l:r.left - 24, r:r.right + 24, t:top - 18, b:top + r.height + 18 };
     });
     // The spawn-in spreads from a point on the ground in the middle distance, right of the copy.
@@ -96,7 +96,7 @@
         let near = 1e9;
         for (const b of boxes) near = Math.min(near, Math.hypot(Math.max(b.l - tmp[0], 0, tmp[0] - b.r), Math.max(b.t - tmp[1], 0, tmp[1] - b.b)));
         textFade[k] = .5 + .5 * smooth(0, 90, near);
-        appear[k] = Math.hypot(x - ox, (z - oz) * 1.3) * .62 + hash(i * 1.7, j * 3.1) * .22;
+        appear[k] = Math.hypot(x - ox, (z - oz) * 1.3) * .3 + hash(i * 1.7, j * 3.1) * .12;
       }
     }
   };
@@ -138,6 +138,10 @@
     mouse.x = e.clientX; mouse.y = e.clientY;
   });
   document.documentElement.addEventListener('mouseleave', () => { mouse.x = mouse.y = -1e4; });
+  // Touch has no 'leave': when the finger lifts, the dots settle back.
+  const lift = e => { if (e.pointerType !== 'mouse') mouse.x = mouse.y = -1e4; };
+  addEventListener('pointerup', lift);
+  addEventListener('pointercancel', lift);
   const balls = [], ripples = [];
   const LIFT = .03;        // the ball sits this far above the ground
   const TRAIL_LIFE = 2.2;  // seconds before a piece of trail has faded away
@@ -173,17 +177,19 @@
   });
 
   const resize = () => {
-    DPR = Math.min(devicePixelRatio || 1, 2);
+    DPR = Math.min(devicePixelRatio || 1, document.documentElement.clientWidth < 700 ? 1.5 : 2);
     W = document.documentElement.clientWidth; VH = innerHeight; H = canvas.clientHeight || VH;
+    if (!W || !VH) return;  // not laid out yet (e.g. a hidden tab); the next resize builds it
     SP = W < 700 ? .032 : .024;
     canvas.width = W * DPR; canvas.height = H * DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     f = Math.max(W * .7, VH * 1.05);
     cx = W * .5; cy = VH * .66;
     build(); makeSprites();
+    if (!built) { built = true; born = t; }
   };
 
-  let t = 0, last = performance.now(), born = 0, VH = innerHeight, fadeOut = 1;
+  let t = 0, last = performance.now(), born = 0, VH = innerHeight, fadeOut = 1, built = false;
   const DRIFT = .3;   // the backdrop moves up at 30% of the scroll speed while it fades
   const frame = now => {
     const dt = reduce ? 0 : Math.min(.05, (now - last) / 1000); last = now;
@@ -192,6 +198,7 @@
     mouse.on += ((present ? 1 : 0) - mouse.on) * Math.min(1, dt * 5);
     if (present) { mouse.sx += (mouse.x - mouse.sx) * Math.min(1, dt * 9); mouse.sy += (mouse.y + scrollY * DRIFT - mouse.sy) * Math.min(1, dt * 9); }
     const R = 130, R2 = R * R;
+    showHint();
     fadeOut = 1 - smooth(0, VH * .6, scrollY);
     canvas.style.opacity = fadeOut.toFixed(3);
     canvas.style.transform = `translate3d(0,${(-scrollY * DRIFT).toFixed(1)}px,0)`;
@@ -215,7 +222,7 @@
         let x = px[k], y = py[k];
         if (x < -6 || x > W + 6 || y < -6 || y > H + 6) continue;
         // spawn-in: each dot fades in and settles a few pixels as the wave reaches it, with a brief flash
-        const e = Math.min(1, Math.max(0, (since - appear[k]) / .55));
+        const e = Math.min(1, Math.max(0, (since - appear[k]) / .35));
         if (e <= 0) continue;
         const settle = 1 - e;
         y -= settle * settle * 10;
@@ -290,7 +297,27 @@
     ctx.fillStyle = core; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   }
 
-  addEventListener('resize', resize);
-  const start = () => { resize(); requestAnimationFrame(frame); };
+  // A small hint in the introduction telling visitors they can drop a ball. It is added here, so it only
+  // exists when the terrain does; it fades in once the terrain has loaded and stays.
+  const hero = document.querySelector('.hero .hero-copy');
+  let hint = null, hintDone = reduce || !hero;
+  if (!hintDone) {
+    hint = document.createElement('p');
+    hint.className = 'terrain-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    const verb = matchMedia('(hover: none)').matches ? 'tap' : 'click';
+    hint.innerHTML = `<span class="terrain-hint-dot"></span>${verb} anywhere to run gradient descent`;
+    hero.append(hint);
+  }
+  const showHint = () => { if (!hintDone && built && t - born > 1.1) hint.classList.add('on'); };
+
+  let lastWidth = 0;
+  addEventListener('resize', () => {
+    const w = document.documentElement.clientWidth;
+    if (built && w === lastWidth) return;
+    lastWidth = w;
+    resize();
+  });
+  const start = () => { lastWidth = document.documentElement.clientWidth; resize(); requestAnimationFrame(frame); };
   document.fonts?.ready ? document.fonts.ready.then(start) : start();
 })();

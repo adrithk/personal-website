@@ -1257,8 +1257,42 @@ section {
   display:block;
   will-change:opacity, transform;
 }
+/* The click hint terrain.js adds to the introduction: bottom left on wide screens, a line under the
+   social links on phones. It fades in once the terrain has loaded and stays. */
+.terrain-hint {
+  position:absolute;
+  left:0;
+  bottom:34px;
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font:0.6875rem var(--mono);
+  letter-spacing:.02em;
+  color:var(--muted);
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity 700ms ease;
+  pointer-events:none;
+}
+.terrain-hint.on { opacity:.9; }
+.terrain-hint-dot {
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#b08bff;
+  box-shadow:0 0 10px #8d62f0;
+  animation:terrain-hint-pulse 2.4s ease-in-out infinite;
+}
+@keyframes terrain-hint-pulse {
+  0%, 100% { transform:scale(.75); opacity:.55; }
+  50% { transform:scale(1.15); opacity:1; }
+}
+@media(max-width:760px) {
+  .terrain-hint { position:static; margin-top:20px; }
+}
 @media print {
-  .terrain-canvas { display:none; }
+  .terrain-canvas, .terrain-hint { display:none; }
 }
 
 /* Readable small text: labels, descriptions, dates, captions and the footer, one or two steps up
