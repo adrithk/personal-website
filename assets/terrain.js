@@ -307,7 +307,7 @@
     hint.className = 'terrain-hint';
     hint.setAttribute('aria-hidden', 'true');
     const verb = matchMedia('(hover: none)').matches ? 'tap' : 'click';
-    hint.innerHTML = `<span class="terrain-hint-dot"></span>${verb} anywhere to run gradient descent`;
+    hint.innerHTML = `<span class="terrain-hint-dot"></span>${verb} anywhere to descend the gradient`;
     hero.append(hint);
   }
   const showHint = () => {
