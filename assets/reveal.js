@@ -5,8 +5,8 @@
 
   const elements = document.querySelectorAll([
     '.hero .intro', '.hero .hero-note', '.hero .socials', '.hero-art',
-    '.section-heading', '.project-row', '.projects-action', '.background-note', '.experience',
-    '.broader-copy p', '.personal h3', '.personal p', '.coffee-gallery', '.contact > *',
+    '.section-heading', '.project-row', '.projects-action',
+    '.broader-copy p', '.personal p', '.coffee-gallery', '.contact > *',
     '.project-header > *', '.project-body > *', '.project-next',
   ].join(','));
 

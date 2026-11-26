@@ -57,6 +57,17 @@
   const BOX = 'main img, main .project-thumb svg, .footer-socials a';
   let lines = [], blocks = [], rules = [], heroBottom = 0, docH = 0, docW = 0;
   const range = document.createRange();
+  // Elements with a visible top or bottom border. Borders only change with the layout, so this list is rebuilt
+  // on resize rather than read from every element's computed style each time the page is measured.
+  let bordered = null;
+  const findBordered = () => {
+    bordered = [];
+    for (const el of document.querySelectorAll('.site-header, .site-footer, main *')) {
+      const cs = getComputedStyle(el);
+      const top = parseFloat(cs.borderTopWidth) > 0, bottom = parseFloat(cs.borderBottomWidth) > 0;
+      if (top || bottom) bordered.push({ el, top, bottom });
+    }
+  };
   const collect = () => {
     const sx = scrollX, sy = scrollY, L = [], B = [];
     const push = (arr, l, t, r, b) => { if (r - l > 1.5 && b - t > 1.5) arr.push({ l:l + sx, t:t + sy, r:r + sx, b:b + sy }); };
@@ -79,14 +90,13 @@
       push(L, q.left, q.top, q.right, q.bottom); push(B, q.left, q.top, q.right, q.bottom);
     }
     // Divider lines (any visible top or bottom border), so the hint can keep clear of them too.
+    if (!bordered) findBordered();
     const R = [];
-    for (const el of document.querySelectorAll('.site-header, .site-footer, main *')) {
-      const cs = getComputedStyle(el);
-      if (parseFloat(cs.borderTopWidth) === 0 && parseFloat(cs.borderBottomWidth) === 0) continue;
+    for (const { el, top, bottom } of bordered) {
       const q = el.getBoundingClientRect();
       if (q.width < 2) continue;
-      if (parseFloat(cs.borderTopWidth) > 0) push(R, q.left, q.top - 1, q.right, q.top + 2);
-      if (parseFloat(cs.borderBottomWidth) > 0) push(R, q.left, q.bottom - 2, q.right, q.bottom + 1);
+      if (top) push(R, q.left, q.top - 1, q.right, q.top + 2);
+      if (bottom) push(R, q.left, q.bottom - 2, q.right, q.bottom + 1);
     }
     lines = L; blocks = B; rules = R;
     hintBox = hintEl.getBoundingClientRect();
@@ -340,7 +350,7 @@
   };
 
   const resize = () => {
-    DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+    DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; bordered = null;
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     collect(); check(); wake();
   };

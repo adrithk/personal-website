@@ -29,7 +29,8 @@
         node.replaceWith(fragment);
       });
     });
-    return { row, words:[...row.querySelectorAll('.sw')], last:-1 };
+    const words = [...row.querySelectorAll('.sw')];
+    return { row, words, shown:words.map(() => ''), last:-1 };
   });
 
   const clamp = value => Math.min(1, Math.max(0, value));
@@ -44,7 +45,9 @@
       item.last = t;
       const lead = t * (item.words.length + SPREAD);
       item.words.forEach((word, i) => {
-        word.style.setProperty('--o', (FLOOR + (1 - FLOOR) * clamp((lead - i) / SPREAD)).toFixed(3));
+        // Only words inside the moving edge change, so most writes are skipped.
+        const o = (FLOOR + (1 - FLOOR) * clamp((lead - i) / SPREAD)).toFixed(3);
+        if (o !== item.shown[i]) { item.shown[i] = o; word.style.setProperty('--o', o); }
       });
       item.row.style.setProperty('--sp', clamp(t * 1.6).toFixed(3));
     });

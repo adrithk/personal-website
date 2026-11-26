@@ -132,20 +132,35 @@
     };
   })();
 
-  let t = 0, last = performance.now();
-  const frame = now => {
-    // the clock never runs backwards (a frame's timestamp can be a touch earlier than when the loop started)
-    const dt = reduce ? 0 : Math.min(.05, Math.max(0, (now - last) / 1000));
-    last = Math.max(last, now); t += dt;
-    const rect = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2), size = Math.round(rect.width * dpr);
-    if (size && canvas.width !== size) canvas.width = canvas.height = size;
-    // only draw while the arm is on screen
-    if (size && rect.bottom > 0 && rect.top < innerHeight) {
-      const k = size / 250;
-      ctx.setTransform(k, 0, 0, k, 0, 0); ctx.clearRect(0, 0, 250, 250); ctx.globalAlpha = 1;
-      arm.draw(ctx, t);
-    }
-    requestAnimationFrame(frame);
+  // The loop runs only while the arm is on screen. Its size is tracked with a ResizeObserver, so a frame never
+  // has to ask the browser for layout. With reduced motion the arm is drawn once, settled into its first pose.
+  let t = 0, last = 0, raf = 0, visible = false, size = 0;
+  const draw = () => {
+    const k = size / 250;
+    ctx.setTransform(k, 0, 0, k, 0, 0); ctx.clearRect(0, 0, 250, 250); ctx.globalAlpha = 1;
+    arm.draw(ctx, t);
   };
-  requestAnimationFrame(frame);
+  const frame = now => {
+    raf = 0;
+    if (!visible || !size) return;
+    const dt = last ? Math.min(.05, Math.max(0, (now - last) / 1000)) : 0;
+    last = now; t += dt;
+    draw();
+    raf = requestAnimationFrame(frame);
+  };
+  const start = () => {
+    if (!visible || !size) return;
+    if (reduce) { for (let i = 0; i < 40; i++) draw(); return; }  // let the joints ease into place
+    if (!raf) { last = 0; raf = requestAnimationFrame(frame); }
+  };
+  const measure = () => {
+    const next = Math.round(canvas.clientWidth * Math.min(devicePixelRatio || 1, 2));
+    if (next !== size) { size = next; canvas.width = canvas.height = size; if (reduce) start(); }
+  };
+  new ResizeObserver(() => { measure(); start(); }).observe(canvas);
+  addEventListener('resize', measure);   // a device-pixel-ratio change (browser zoom) without a size change
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible) start();
+  }).observe(canvas);
 })();
