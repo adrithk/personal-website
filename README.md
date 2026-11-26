@@ -47,6 +47,10 @@ Scroll reveals live in `assets/reveal.js` and are shared across the homepage, pr
 
 On the homepage, `assets/scroll-text.js` replaces the timed entrance of the project rows: each row's title, description and tags fill in word by word as the row scrolls up the window, and reverse when scrolling back. `START`, `END`, `SPREAD` and `FLOOR` at the top of the script tune where it begins, where it completes, how soft the edge is, and how faint unrevealed words are.
 
+## Robot arm
+
+The homepage hero art is a robot arm on a table (`assets/robot-arm.js`, drawn on `.arm-canvas` inside `.hero-art`). On a loop it picks up two cubes and a ball one at a time and drops them into a bin; the bin then empties and the round starts again. Two-link inverse kinematics place the wrist, with the fingertips kept pointing straight down. `BASE`, `L1`/`L2`/`L3` (link lengths), `SPOTS`, `BIN` and `PER` (seconds per object) at the top of the arm set the layout and pace. With reduced motion it is drawn still; without JavaScript the figure is empty, since it is decorative.
+
 ## Homepage terrain
 
 Behind the homepage introduction sits a dotted loss landscape in the site's violet-to-pink palette, shading toward the wordmark's dusty rose near the bottom. On load the dots spawn in as a wave spreading across the range. Dots shift away from the cursor, and a click on an empty part of the introduction drops a ball from the cursor that rolls slowly down the gradient, leaves a fading trail, and sends a ripple through the dots when it settles. Dots behind the copy and the diagram are dimmed so the text stays clear. While scrolling, the backdrop drifts up a little and fades out within the first part of the screen, so the next section arrives on the plain page. The scroll cue reads “Descend the gradient”. Once the terrain has loaded, a small hint (“click anywhere to run gradient descent”, or “tap” on touch screens) appears at the bottom left of the introduction, or under the social links on phones, and fades out together with the backdrop when scrolling down.

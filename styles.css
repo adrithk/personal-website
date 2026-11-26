@@ -1244,6 +1244,9 @@ section {
 .contact > a { text-decoration-color:var(--accent-warm); }
 .contact > a:hover { text-decoration-color:var(--accent); }
 
+/* Robot arm (assets/robot-arm.js): the homepage hero art, drawn on a square canvas the size of the old diagram. */
+.hero-art .arm-canvas { display:block; width:100%; aspect-ratio:1; }
+
 /* Homepage terrain (assets/terrain.js). A fixed backdrop behind the introduction; while scrolling, the script
    drifts it up a little and fades it out, so the next section arrives on the plain page. */
 .terrain-canvas {
